@@ -16,8 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
+from matches import views as match_views
+
 
 urlpatterns = [
+    path('', match_views.index, name='index'),
     path('matches/', include('matches.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('registration.backends.simple.urls')),

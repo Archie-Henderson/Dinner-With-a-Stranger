@@ -1,5 +1,9 @@
 from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse
 from .models import Match
+
+def index(request):
+    return render(request, 'index.html')
 
 def match_list(request):
     matches = Match.objects.all()
@@ -22,7 +26,7 @@ def matches_denied(request):
     return render(request, 'matches/matches_denied.html', {'matches': matches})
 
 def matches_possible(request):
-    matches = Match.objects.all()  # Change this filter if needed
+    matches = Match.objects.all() 
     return render(request, 'matches/matches_possible.html', {'matches': matches})
 
 def block_confirm(request):
