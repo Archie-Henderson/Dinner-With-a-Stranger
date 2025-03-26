@@ -10,10 +10,6 @@ def profile_home(request):
 def edit_profile(request):
     return render(request, 'userpage/base.html', {'section': 'edit'})
 
-@login_required
-def change_password(request):
-    return render(request, 'userpage/base.html', {'section': 'change_password'})
-
 def view_profile(request, username):
     user = get_object_or_404(User, username=username)
     return render(request, 'userpage/base.html', {
