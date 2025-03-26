@@ -15,9 +15,12 @@ class UserProfile(models.Model):
 
 
 class Match(models.Model):
+    class Meta:
+        verbose_name_plural='Matches'
+        
     match_id = models.CharField(max_length=10, unique=True)
-    user1 = models.ForeignKey(User, on_delete=models.CASCADE)
-    user2 = models.ForeignKey(User, on_delete=models.CASCADE)
+    user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='match_initiator')
+    user2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='matched_user')
 
     user1_status = models.CharField(max_length=20, choices=[("pending", "Pending"), ("accepted", "Accepted"), ("declined", "Declined")])
     user2_status = models.CharField(max_length=20, choices=[("pending", "Pending"), ("accepted", "Accepted"), ("declined", "Declined")])
