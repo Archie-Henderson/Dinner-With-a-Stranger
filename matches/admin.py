@@ -1,6 +1,5 @@
 from django.contrib import admin
-from matches.models import UserProfile, Match
+from matches.models import Match
 
 # Register your models here.
-admin.site.register(UserProfile)
 admin.site.register(Match)
