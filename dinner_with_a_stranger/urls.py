@@ -22,7 +22,7 @@ from matches import views as match_views
 urlpatterns = [
     path('', match_views.index, name='index'),
     path('matches/', include('matches.urls')),
-    path('profile/', include('userpage.urls')), 
+    path('profile/', include('user_page.urls')), 
     path('admin/', admin.site.urls),
     path('accounts/', include('registration.backends.simple.urls')),
 ]

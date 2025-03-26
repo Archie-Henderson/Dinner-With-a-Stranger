@@ -1,5 +1,5 @@
 from django.urls import path
-from userpage import views
+from user_page import views
 
 app_name = 'userpage'
 
