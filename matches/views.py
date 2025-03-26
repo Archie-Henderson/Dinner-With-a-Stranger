@@ -11,7 +11,7 @@ def index(request):
 # List all matches (for dev/testing)
 @login_required
 def match_list(request):
-    matches = Match.objects.all()
+    matches = Match.objects.filter(user1=request.user)|Match.objects.filter(user2=request.user)
     return render(request, 'matches/match_list.html', {'matches': matches})
 
 # Show details of a specific match
@@ -23,24 +23,35 @@ def match_detail(request, match_id):
 # Show pending matches involving current user
 @login_required
 def matches_pending(request):
+<<<<<<< HEAD
     matches = Match.objects.filter(
         Q(user1=request.user, user1_status='pending') |
         Q(user2=request.user, user2_status='pending')
     )
+=======
+    matches = Match.objects.filter(user1=request.user, user1_status='pending').exclude(user2_status='declined')|Match.objects.filter(user2=request.user, user2_status='pending').exclude(user1_status='declined')
+    matches=matches.values()
+>>>>>>> 78de8b8699ec1606baa6272f37b5309f9de3b4a0
     return render(request, 'matches/matches_pending.html', {'matches': matches})
 
 # Show accepted matches involving current user
 @login_required
 def matches_accepted(request):
+<<<<<<< HEAD
     matches = Match.objects.filter(
         Q(user1=request.user, user1_status='accepted') |
         Q(user2=request.user, user2_status='accepted')
     )
+=======
+    matches = Match.objects.filter(user1=request.user, user1_status='accepted', user2_status='accepted')|Match.objects.filter(user2=request.user, user1_status='accepted', user2_status='accepted')
+    matches=matches.values()
+>>>>>>> 78de8b8699ec1606baa6272f37b5309f9de3b4a0
     return render(request, 'matches/matches_accepted.html', {'matches': matches})
 
 # Show denied/declined matches involving current user
 @login_required
 def matches_denied(request):
+<<<<<<< HEAD
     matches = Match.objects.filter(
         Q(user1=request.user, user1_status='declined') |
         Q(user2=request.user, user2_status='declined')
@@ -55,12 +66,19 @@ def matches_possible(request):
 
 # Confirm block view (could be after user blocks someone)
 @login_required
+=======
+    matches = Match.objects.filter(user1=request.user, user1_status='declined')|Match.objects.filter(user2=request.user, user1_status='declined')|Match.objects.filter(user1=request.user, user2_status='declined')|Match.objects.filter(user2=request.user, user2_status='declined')
+    matches=matches.values()
+    return render(request, 'matches/matches_denied.html', {'matches': matches})
+
+>>>>>>> 78de8b8699ec1606baa6272f37b5309f9de3b4a0
 def block_confirm(request):
     return render(request, 'matches/block_confirm.html')
 
 # Confirm unmatch view
 @login_required
 def unmatch_confirm(request):
+<<<<<<< HEAD
     return render(request, 'matches/unmatch_confirm.html')
 
 # Base layout test or section hub
@@ -85,3 +103,6 @@ def update_match_status(request, match_id, decision):
 
     match.save()
     return JsonResponse({'status': 'updated', 'match_id': match_id})
+=======
+    return render(request, 'matches/unmatch_confirm.html')
+>>>>>>> 78de8b8699ec1606baa6272f37b5309f9de3b4a0
