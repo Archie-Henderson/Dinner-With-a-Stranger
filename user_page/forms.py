@@ -1,17 +1,16 @@
-# user_page/forms.py
 from django import forms
 from .models import UserProfile
 
 class EditProfileForm(forms.ModelForm):
-    # Customizing the fields for the profile
+    
     bio = forms.CharField(
         widget=forms.Textarea(attrs={'placeholder': 'Tell us about yourself...'}),
-        required=False  # Making the bio field optional
-    )  # Optional bio field
+        required=False  
+    )  
     
-    picture = forms.ImageField(required=False)  # Optional picture field
+    picture = forms.ImageField(required=False)  
 
-    # Adding other fields based on the wireframe
+    
     phone_number = forms.CharField(max_length=15, required=False, widget=forms.TextInput(attrs={'placeholder': 'Phone Number'}))
     age = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'placeholder': 'Age'}))
     meal_preferences = forms.MultipleChoiceField(

@@ -34,11 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-<<<<<<< Updated upstream
     'registration',
-=======
-
->>>>>>> Stashed changes
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -157,7 +153,7 @@ STATICFILES_DIRS = [STATIC_DIR, ]
 #Media files
 MEDIA_URL = '/media/'
 
-MEDIA_ROOT = MEDIA_DIR
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 #Cookie settings
 SESSION_EXPIRE_AT_BROWSER_CLOSE=True
