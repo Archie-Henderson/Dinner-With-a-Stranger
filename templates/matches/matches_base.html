@@ -15,13 +15,21 @@
             <span class="status-text {% block match_active %}{% endblock %}">Match</span>
         </div>
 
-        <!-- Tab Navigation -->
         <div class="matches-nav">
-            <a href="{% url 'matches:matches_possible' %}" class="nav-btn {% block possible_active %}{% endblock %}">Possible</a>
-            <a href="{% url 'matches:matches_pending' %}" class="nav-btn {% block pending_active %}{% endblock %}">Pending</a>
-            <a href="{% url 'matches:matches_accepted' %}" class="nav-btn {% block accepted_active %}{% endblock %}">Accepted</a>
-            <a href="{% url 'matches:matches_denied' %}" class="nav-btn {% block denied_active %}{% endblock %}">Denied</a>
+            <a href="{% url 'matches:matches_possible' %}" class="nav-btn {% block possible_active %}{% endblock %}">
+                Possible (<span id="possible-count">0</span>)
+            </a>
+            <a href="{% url 'matches:matches_pending' %}" class="nav-btn {% block pending_active %}{% endblock %}">
+                Pending (<span id="pending-count">0</span>)
+            </a>
+            <a href="{% url 'matches:matches_accepted' %}" class="nav-btn {% block accepted_active %}{% endblock %}">
+                Accepted (<span id="accepted-count">0</span>)
+            </a>
+            <a href="{% url 'matches:matches_denied' %}" class="nav-btn {% block denied_active %}{% endblock %}">
+                Denied (<span id="denied-count">0</span>)
+            </a>
         </div>
+        
     </div>
 
     <!-- Grid of Match Cards -->

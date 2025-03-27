@@ -28,6 +28,8 @@ def find_new_matches(request):
 def index(request):
     return render(request, 'matches/index.html')
 
+
+
 @login_required
 def matches_pending(request):
     matches = Match.objects.filter(
@@ -116,4 +118,26 @@ def match_action_confirm(request, match_id, action_type):
         'match': match,
         'action_type': action_type,  # Pass the action type (deny/unmatch)
     })
+
+#for the match count on the index page
+def total_matches(request):
+    count = Match.objects.count()
+    return JsonResponse({'total_matches': count})
+
+
+@login_required
+def user_match_counts(request):
+    user = request.user
+    possible_count = Match.objects.filter(user=user,status="possible").count()
+    accepted_count = Match.objects.filter(user=user,status="accepted").count()
+    pending_count = Match.objects.filter(user=user, status="pending").count()
+    denied_count = Match.objects.filter(user=user, status="denied").count()
+
+    return JsonResponse({
+        'possible': possible_count,
+        'accepted': accepted_count,
+        'pending': pending_count,
+        'denied' : denied_count
+    })
+
 
