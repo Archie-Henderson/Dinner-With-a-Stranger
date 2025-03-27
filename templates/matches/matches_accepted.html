@@ -12,16 +12,16 @@
                 {% with other_user=match.user2 %}
                     {% include 'matches/match_card.html' with 
                         other_user=other_user 
-                        action_label='View Profile' 
-                        action_url='#' 
+                        action_label='Unmatch' 
+                        action_url='{% url "matches:update_match_status" match.match_id "declined" %}' 
                     %}
                 {% endwith %}
             {% else %}
                 {% with other_user=match.user1 %}
                     {% include 'matches/match_card.html' with 
                         other_user=other_user 
-                        action_label='View Profile' 
-                        action_url='#' 
+                        action_label='Unmatch' 
+                        action_url='{% url "matches:update_match_status" match.match_id "declined" %}' 
                     %}
                 {% endwith %}
             {% endif %}
