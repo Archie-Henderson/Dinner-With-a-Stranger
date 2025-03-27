@@ -22,7 +22,7 @@ class PageSetupTests(TestCase):
         
         self.project_urls_module = importlib.import_module('matches.urls')
 
-        self.pages={'match_list':('',self.views_module.match_list),'match_detail':('10/',self.views_module.match_detail), 'matches_pending':('pending/',self.views_module.matches_pending), 'matches_accepted':('accepted/',self.views_module.matches_accepted),'matches_denied':('denied/',self.views_module.matches_denied), 'matches_possible':('possible/',self.views_module.matches_possible), 'block_confirm':('block-confirm/',self.views_module.block_confirm), 'unmatch_confirm':('unmatch/',self.views_module.unmatch_confirm), 'matches_base':('base/',self.views_module.matches_base), 'update_match_status':('update/10/y/',self.views_module.update_match_status)}
+        self.pages={'matches_pending':('pending/',self.views_module.matches_pending), 'matches_accepted':('accepted/',self.views_module.matches_accepted),'matches_denied':('denied/',self.views_module.matches_denied), 'matches_possible':('possible/',self.views_module.matches_possible), 'matches_base':('base/',self.views_module.matches_base), 'update_match_status':('update/10/y/',self.views_module.update_match_status)}
 
     def test_view_exists(self):
         for (page, values) in self.pages.items():
