@@ -144,4 +144,8 @@ def user_match_counts(request):
         'denied' : denied_count
     })
 
+def custom_logout(request):
+    logout(request)
+    messages.success(request, "You have been logged out. Hope you had a good Dining with Strangers!")
+    return redirect('index')  # Redirect to the home page
 
