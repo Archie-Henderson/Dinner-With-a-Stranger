@@ -5,28 +5,35 @@
 {% block wait_active %}active{% endblock %}
 {% block pending_active %}active{% endblock %}
 
-{% block matches_grid %}
-    {% if matches %}
-        {% for match in matches %}
-            {% if match.user1 == request.user %}
-                {% with other_user=match.user2 %}
-                    {% include 'matches/match_card.html' with 
-                        other_user=other_user 
-                        action_url="{% url 'matches:update_match_status' match.match_id 'accepted' %}" 
-                        action_label='MATCH' 
-                    %}
-                {% endwith %}
-            {% else %}
-                {% with other_user=match.user1 %}
-                    {% include 'matches/match_card.html' with 
-                        other_user=other_user 
-                        action_url="{% url 'matches:update_match_status' match.match_id 'accepted' %}" 
-                        action_label='MATCH' 
-                    %}
-                {% endwith %}
-            {% endif %}
-        {% endfor %}
-    {% else %}
-        <p>You have no pending matches yet.</p>
-    {% endif %}
-{% endblock %}
+<div class="ajax-controls">
+    <button id="refresh-matches">Refresh Pending Matches</button>
+</div>
+
+
+<div id="ajax-matches-container">
+    {% block matches_grid %}
+        {% if matches %}
+            {% for match in matches %}
+                {% if match.user1 == request.user %}
+                    {% with other_user=match.user2 %}
+                        {% include 'matches/match_card.html' with 
+                            other_user=other_user 
+                            action_url="{% url 'matches:update_match_status' match.match_id 'accepted' %}" 
+                            action_label='MATCH' 
+                        %}
+                    {% endwith %}
+                {% else %}
+                    {% with other_user=match.user1 %}
+                        {% include 'matches/match_card.html' with 
+                            other_user=other_user 
+                            action_url="{% url 'matches:update_match_status' match.match_id 'accepted' %}" 
+                            action_label='MATCH' 
+                        %}
+                    {% endwith %}
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <p>You have no pending matches yet.</p>
+        {% endif %}
+    {% endblock %}
+</div>
