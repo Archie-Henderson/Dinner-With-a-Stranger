@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Q
+from django.conf import settings
 from .models import Match
 
 
@@ -36,7 +37,7 @@ def matches_denied(request):
     return render(request, 'matches/matches_denied.html', {'matches': matches})
 
 
-@login_required
+@staff_required(login_url='../possible/')
 def matches_possible(request):
     matches = Match.objects.all()
     return render(request, 'matches/matches_possible.html', {'matches': matches})
