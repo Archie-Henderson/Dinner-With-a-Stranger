@@ -11,7 +11,7 @@ from matches.models import Match
 from user_page.models import UserProfile
 from django.db.models import Q
 
-from .forms import EditProfileForm
+from .forms import EditProfileForm, UserPreferencesForm
 
 @login_required
 def profile_home(request):
@@ -42,6 +42,25 @@ def edit_profile(request):
         form = EditProfileForm(instance=profile)
 
     return render(request, 'userpage/user_profile_edit.html', {'form': form})
+
+@login_required
+def registration_preferences(request):
+    # Get or create user profile
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = UserPreferencesForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('matches:matches_possible')  # Redirect to matches page after preferences
+    else:
+        form = UserPreferencesForm(instance=profile)
+
+    return render(request, 'registration/preferences.html', {
+        'form': form,
+        'is_new_user': created
+    })
+
 
 class CustomPasswordChangeView(PasswordChangeView):
     template_name = 'userpage/change_password.html'
