@@ -23,7 +23,7 @@ def populate_users():
     # Add users to the database
     for user_data in users_data:
         print(user_data['username'], user_data['email'])
-        user, created = User.objects.get_or_create(username=user_data['username'], email=user_data['email'])
+        user, created = User.objects.get_or_create(username=user_data['username'], email=user_data['email'], password=['password123'])
         if created:
             # Create a UserProfile for each user
             UserProfile.objects.create(user=user, age=user_data['age'], description=user_data['description'], phone_number=user_data['phone_number'], max_age_difference=user_data['max_age_difference'])
