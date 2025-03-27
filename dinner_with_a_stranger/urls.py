@@ -25,6 +25,5 @@ urlpatterns = [
     path('profile/', include('user_page.urls')), 
     path('admin/', admin.site.urls),
     path('accounts/', include('registration.backends.simple.urls')),
-    path('ajax/matches/pending/', views.ajax_matches_pending, name='ajax_matches_pending'),
 ]
 

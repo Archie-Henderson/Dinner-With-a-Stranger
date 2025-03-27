@@ -12,4 +12,5 @@ urlpatterns = [
     path('unmatch-confirm/', views.unmatch_confirm, name='unmatch_confirm'),
     path('base/', views.matches_base, name='matches_base'),
     path('update/<str:match_id>/<str:decision>/', views.update_match_status, name='update_match_status'),
+    path('ajax/pending/', views.ajax_matches_pending, name='ajax_matches_pending'),
 ]
