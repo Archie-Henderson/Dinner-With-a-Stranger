@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}Set Your Preferences{% endblock %}
+
+{% block content %}
+    <div class="hero-container">
+        <h1>Great meals, even better company.</h1>
+        <h2>Find your perfect dining match!</h2>
+    </div>
+
+    <div class="preferences-container">
+        <h3>Let’s see what you like</h3>
+        <p>We will match you with Strangers based on your preferences</p>
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <!-- Regional Cuisines -->
+            <div class="preference-group">
+                <h4>Regional Cuisines</h4>
+                <label><input type="checkbox" name="cuisines" value="Asian"> Asian</label><br>
+                <label><input type="checkbox" name="cuisines" value="Italian"> Italian</label><br>
+                <label><input type="checkbox" name="cuisines" value="Mediterranean"> Mediterranean</label><br>
+                <label><input type="checkbox" name="cuisines" value="Indian"> Indian</label><br>
+                <label><input type="checkbox" name="cuisines" value="Latin American"> Latin American</label><br>
+            </div>
+
+            <!-- Budget -->
+            <div class="preference-group">
+                <h4>Budget</h4>
+                <label><input type="checkbox" name="budget" value="$"> $</label><br>
+                <label><input type="checkbox" name="budget" value="$$"> $$</label><br>
+                <label><input type="checkbox" name="budget" value="$$$"> $$$</label><br>
+                <label><input type="checkbox" name="budget" value="$$$$"> $$$$</label><br>
+            </div>
+
+            <!-- Dining Vibes -->
+            <div class="preference-group">
+                <h4>Dining Vibes</h4>
+                <label><input type="checkbox" name="dining_vibes" value="Fast Food"> Fast Food</label><br>
+                <label><input type="checkbox" name="dining_vibes" value="Fine Dining"> Fine Dining</label><br>
+                <label><input type="checkbox" name="dining_vibes" value="Healthy & Organic"> Healthy & Organic</label><br>
+                <label><input type="checkbox" name="dining_vibes" value="Brunch & Breakfast"> Brunch & Breakfast</label><br>
+                <label><input type="checkbox" name="dining_vibes" value="Café & Coffee"> Café & Coffee</label><br>
+            </div>
+
+            <!-- Age Range -->
+            <div class="preference-group">
+                <h4>Age Range</h4>
+                <label><input type="checkbox" name="age_range" value="16-19"> 16-19</label><br>
+                <label><input type="checkbox" name="age_range" value="19-21"> 19-21</label><br>
+                <label><input type="checkbox" name="age_range" value="21-23"> 21-23</label><br>
+                <label><input type="checkbox" name="age_range" value="24-26"> 24-26</label><br>
+                <label><input type="checkbox" name="age_range" value="27+"> 27+</label><br>
+            </div>
+
+            <!-- Dietary Needs -->
+            <div class="preference-group">
+                <h4>Dietary Needs</h4>
+                <label><input type="checkbox" name="dietary_needs" value="Vegetarian"> Vegetarian</label><br>
+                <label><input type="checkbox" name="dietary_needs" value="Vegan"> Vegan</label><br>
+                <label><input type="checkbox" name="dietary_needs" value="Keto / Low-carb"> Keto / Low-carb</label><br>
+                <label><input type="checkbox" name="dietary_needs" value="Gluten-free"> Gluten-free</label><br>
+                <label><input type="checkbox" name="dietary_needs" value="Nut Allergy"> Nut Allergy</label><br>
+                <label><input type="checkbox" name="dietary_needs" value="Lactose Intolerant"> Lactose Intolerant</label><br>
+                <label><input type="checkbox" name="dietary_needs" value="Pescatarian"> Pescatarian</label><br>
+                <label><input type="checkbox" name="dietary_needs" value="No Restrictions"> No Restrictions</label><br>
+            </div>
+
+            <button type="submit" class="btn btn-submit">Sign Up!</button>
+        </form>
+    </div>
+
+    <style>
+        .preferences-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .preference-group {
+            margin-bottom: 20px;
+        }
+
+        .preference-group h4 {
+            color: #333;
+            font-size: 20px;
+        }
+
+        .preference-group label {
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .form-control {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        .btn-submit {
+            background-color: #f39c12;
+            color: white;
+            padding: 12px;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .hero-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .hero-container h1, .hero-container h2 {
+            font-size: 36px;
+            color: #333;
+        }
+    </style>
+{% endblock %}
