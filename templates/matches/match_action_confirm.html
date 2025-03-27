@@ -1,0 +1,17 @@
+{% extends 'matches/matches_base.html' %}
+
+{% block title %}Match Action Confirmation{% endblock %}
+{% block content %}
+    <div class="confirmation-container">
+        <h2>Are you sure you want to {{ action_type|title }} this match?</h2>
+        <p>You will no longer be able to interact with this match if you {{ action_type }}.</p>
+
+        <!-- Form for the action -->
+        <form method="POST" action="{% url 'matches:update_match_status' match.match_id action_type %}">
+            {% csrf_token %}
+            <button type="submit" class="confirm-btn">{{ action_type|title }} Match</button>
+        </form>
+        
+        <a href="{% url 'matches:matches_pending' %}" class="cancel-btn">Cancel</a>
+    </div>
+{% endblock %}

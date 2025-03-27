@@ -109,3 +109,19 @@ def update_match_status(request, match_id, decision):
 
     match.save()
     return JsonResponse({'status': 'updated', 'match_id': match_id})
+
+@login_required
+def match_action_confirm(request, match_id, action_type):
+    match = get_object_or_404(Match, match_id=match_id)
+    
+    if action_type not in ['deny', 'unmatch']:
+        return HttpResponse("Invalid action", status=400)
+
+    other_user = match.user1 if match.user2 == request.user else match.user2
+
+    return render(request, 'matches/match_action_confirm.html', {
+        'other_user': other_user,
+        'match': match,
+        'action_type': action_type,  # Pass the action type (deny/unmatch)
+    })
+
