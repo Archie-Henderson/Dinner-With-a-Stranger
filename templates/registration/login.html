@@ -5,23 +5,48 @@
 {% endblock %}
 
 {% block content %}
-    <div class="jumbotron p-4">
-        <div class="container">
-            <h1 class="jumbotron-heading">Login</h1>
-        </div>
+    <!-- Hero Section with Description -->
+    <div class="hero-container">
+        <h1>Great meals, even better company.</h1>
+        <h2>Find your perfect dining match!</h2>
     </div>
 
-    <div class="container">
-        <form class="form-signin" role="form" method="post" action=".">
-            {% csrf_token %}
-            <label for="inputUsername" class="sr-only">Username</label>
-            <input type="text" name="username" id="id_username" class="form-control"
-            placeholder="Username" required autofocus>
-            <label for="inputPassword" class="sr-only">Password</label>
-            <input type="password" name="password" id="id_password" class="form-control"
-            placeholder="Password" required>
-            <button class="btn btn-lg btn-primary btn-block" type="submit"
-            value="Submit">Sign in</button>
-        </form>
+    <!-- Login Form Section -->
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-buttons">
+                <!-- Button to switch between Login/Sign Up -->
+                <button class="btn active" id="login-btn">
+                    <a href="{% url 'auth_login' %}">Log In</a>
+                </button>
+                <button class="btn" id="signup-btn">
+                    <a href="{% url 'registration_register' %}">Sign Up</a>
+                </button>
+            </div>
+
+            <div class="login-welcome-back">
+                <h3>Welcome back Stranger!</h3>
+            <div>
+
+            <form method="post" action=".">
+                {% csrf_token %}
+                <div class="form-field">
+                    <label for="id_username">Email</label>
+                    <input type="email" name="username" id="id_username" class="form-control" placeholder="Email" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="id_password">Password</label>
+                    <input type="password" name="password" id="id_password" class="form-control" placeholder="Password" required>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-submit" type="submit">Log In!</button>
+                    <p class="forgot-password">
+                        <a href="{% url 'auth_password_change' %}">Forgot Password?</a>
+                    </p>
+                </div>
+            </form>
+        </div>
     </div>
 {% endblock %}
