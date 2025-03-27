@@ -10,7 +10,7 @@ def staff_required(login_url=None):
 
 
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'matches/index.html')
 
 @login_required
 def matches_pending(request):

@@ -1,10 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dinner With a Stranger</title>
-</head>
-<body>
-    <h1>Welcome to Dinner With a Stranger!</h1>
-    <p>This is the index page — it's working 🎉</p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Welcome to Dinner with Strangers!{% endblock %}
+
+{% block content %}
+    <div class="welcome-section">
+        <h1>Welcome to Dinner with Strangers!</h1>
+        <p>Find people with similar meal preferences and dietary needs to have a meal together. Explore new connections and expand your culinary horizons.</p>
+
+        <div class="call-to-action">
+            <h2>Get Started</h2>
+            <p>Set up your profile and let us find your perfect match!</p>
+            
+        </div>
+
+        <div class="how-it-works">
+            <h2>How it Works</h2>
+            <ul>
+                <li>Create your profile with preferences</li>
+                <li>Find people with similar tastes</li>
+                <li>Match with someone and set up a meal</li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
