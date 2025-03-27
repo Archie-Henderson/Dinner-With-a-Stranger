@@ -16,6 +16,25 @@ from django.contrib.auth import logout
 def staff_required(login_url=None):
     return user_passes_test(lambda u: u.is_staff, login_url=login_url)
 
+def __check_matched(user, other_user):
+    if not (Match.objects.filter(user1=user, user2=other_user) or Match.objects.filter(user1=other_user, user2=user)):
+        return True
+    else:
+        return False
+
+def __check_age_range(user, other_user):
+    if ((user.age_range=='27+' and other_user.age>=27) or (other_user.age < int(user.age_range[-2:]) and other_user.age > int(user.age_range[:2]))) and ((other_user.age_range=='27+' and user.age>=27) or (user.age < int(other_user.age_range[-2:]) and user.age > int(other_user.age_range[:2]))):
+        return True
+    else:
+        return False
+    
+def __check_cuisines(user, other_user):
+    for cuisine in user.cuisines:
+        if cuisine in other_user.cuisines:
+            return True
+        
+    return False
+
 def find_new_matches(request):
     user=request.user
     user_profile=get_object_or_404(UserProfile, user=user)
@@ -23,12 +42,11 @@ def find_new_matches(request):
     new_matches=0
 
     for other_user in UserProfile.objects.all():
-        if not (Match.objects.filter(user1=user, user2=other_user) or Match.objects.filter(user1=other_user, user2=user)):
-            if ((user.age_range=='27+' and other_user.age>=27) or (other_user.age < int(user.age_range[-2:]) and other_user.age > int(user.age_range[:2]))) and ((other_user.age_range=='27+' and user.age>=27) or (user.age < int(other_user.age_range[-2:]) and user.age > int(other_user.age_range[:2]))):
-                Match.objects.create(user1=user, user2=other_user)
-                new_matches+=1
-                if new_matches>50:
-                    return
+        if __check_matched(user,other_user) and __check_age_range(user,other_user) and __check_cuisines(user, other_user):
+            Match.objects.create(user1=user, user2=other_user)
+            new_matches+=1
+            if new_matches>50:
+                return
 
 def index(request):
     if not request.user.is_authenticated and 'logged_out' not in request.session:
