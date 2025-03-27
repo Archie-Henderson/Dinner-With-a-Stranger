@@ -4,23 +4,13 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Q
 from .models import Match
 
-# Function to allow view to require staff permission to access
+
 def staff_required(login_url=None):
     return user_passes_test(lambda u: u.is_staff, login_url=login_url)
 
-# Home page
+
 def index(request):
     return render(request, 'index.html')
-
-@login_required
-def match_list(request):
-    matches = Match.objects.filter(Q(user1=request.user) | Q(user2=request.user))
-    return render(request, 'matches/match_list.html', {'matches': matches})
-
-@login_required
-def match_detail(request, match_id):
-    match = get_object_or_404(Match, match_id=match_id)
-    return render(request, 'matches/match_detail.html', {'match': match})
 
 @login_required
 def matches_pending(request):
@@ -36,7 +26,7 @@ def matches_accepted(request):
         user2_status='accepted', user1_status='accepted').values()
     return render(request, 'matches/matches_accepted.html', {'matches': matches})
 
-# Show matches that the current user has denied
+
 @login_required
 def matches_denied(request):
     matches = Match.objects.filter(
@@ -45,7 +35,7 @@ def matches_denied(request):
     )
     return render(request, 'matches/matches_denied.html', {'matches': matches})
 
-# Show all current matches made (staff only)
+
 @staff_required(login_url="../admin")
 def matches_possible(request):
     matches = Match.objects.all()
