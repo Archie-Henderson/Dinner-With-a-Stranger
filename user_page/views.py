@@ -17,7 +17,7 @@ from .forms import EditProfileForm
 def profile_home(request):
     profile = get_object_or_404(UserProfile, user=request.user)
     
-    return render(request, 'userpage/user_profile.html', {
+    return render(request, 'user_page/user_profile.html', {
             'view_user': request.user,
             'profile': profile,
             'is_own_profile': True,
@@ -41,7 +41,7 @@ def edit_profile(request):
     else:
         form = EditProfileForm(instance=profile)
 
-    return render(request, 'userpage/user_profile_edit.html', {'form': form})
+    return render(request, 'user_page/user_profile_edit.html', {'form': form})
 
 class CustomPasswordChangeView(PasswordChangeView):
     template_name = 'userpage/change_password.html'
@@ -49,8 +49,12 @@ class CustomPasswordChangeView(PasswordChangeView):
 
 # View another user's profile by username
 @login_required
-def view_profile(request, username):
-    user = get_object_or_404(User, username=username)
+def view_profile(request, username=None):
+    if username==None:
+        user=request.user
+    else:    
+        user = get_object_or_404(User, username=username)
+
     profile = get_object_or_404(UserProfile, user=user)
 
     # Check if the current user is viewing their own profile or another user's
@@ -68,7 +72,7 @@ def view_profile(request, username):
     except:
         allow_view = False
 
-    return render(request, 'userpage/user_profile.html', {
+    return render(request, 'user_page/user_profile.html', {
         'profile': profile,
         'is_own_profile': is_own_profile,
         'view_user': user,
