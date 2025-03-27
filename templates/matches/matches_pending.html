@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Pending Matches{% endblock %}
+
+{% block content %}
+<div class="matches-container">
+    <!-- Header Section -->
+    <div class="matches-header">
+        <h1>Pending Matches</h1>
+        
+        <!-- Text Labels (New, Wait, Match) -->
+        <div class="matches-status">
+            <span class="status-text">New</span>
+            <span class="status-text active">Wait</span>  <!-- 'Wait' is active for pending -->
+            <span class="status-text">Match</span>
+        </div>
+
+        <!-- Navigation Buttons for Possible, Pending, Accepted, Denied -->
+        <div class="matches-nav">
+            <a href="{% url 'matches:matches_possible' %}" class="nav-btn">Possible</a>
+            <a href="{% url 'matches:matches_pending' %}" class="nav-btn active">Pending</a>
+            <a href="{% url 'matches:matches_accepted' %}" class="nav-btn">Accepted</a>
+            <a href="{% url 'matches:matches_denied' %}" class="nav-btn">Denied</a>
+        </div>
+    </div>
+
+    <!-- Matches Grid Section -->
+    <div class="matches-grid">
+        <!-- Loop through all the pending matches -->
+        {% if matches %}
+            {% for match in matches %}
+                {% if match.user1 == request.user %}
+                    {% with other_user=match.user2 %}
+                {% else %}
+                    {% with other_user=match.user1 %}
+                {% endif %}
+
+                <div class="match-card">
+                    <div class="match-img">
+                        <img src="{{ other_user.userprofile.picture.url|default:'/static/images/default.jpg' }}" alt="{{ other_user.username }}">
+                    </div>
+                    <div class="match-info">
+                        <h2>{{ other_user.username }}</h2>
+                        <p>{{ other_user.userprofile.description|default:"No bio yet!" }}</p>
+                        <a href="#" class="match-btn">MATCH</a>
+                    </div>
+                </div>
+                {% endwith %}
+            {% endfor %}
+
+        {% else %}
+            <p>No pending matches found.</p>  <!-- Message if no pending matches are found -->
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
