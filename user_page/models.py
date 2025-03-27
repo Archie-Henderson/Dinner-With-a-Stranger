@@ -12,17 +12,15 @@ class UserProfile(models.Model):
     age = models.IntegerField(validators=[MinValueValidator(16), MaxValueValidator(100)])
     max_age_difference = models.PositiveIntegerField(validators=[MaxValueValidator(20)])
 
-    cuisines = models.CharField(max_length=20,blank=True)
+    cuisines = models.CharField(max_length=20)
 
-    dining_vibes = models.CharField(max_length=20, blank=True)
+    dining_vibes = models.CharField(max_length=20)
 
-    
     budget = models.CharField(max_length=5, default='$')
 
     age_range = models.CharField(max_length=10, default='19-21')
 
-
-    dietary_needs = models.CharField(max_length=20, blank=True)
+    dietary_needs = models.CharField(max_length=20)
 
     def __str__(self):
         return self.user.username
