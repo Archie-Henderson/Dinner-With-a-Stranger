@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-<<<<<<< HEAD
 
 from django.contrib.auth.views import PasswordChangeView
 
@@ -11,14 +10,6 @@ from .models import UserProfile
 from django.db.models import Q
 
 from .forms import EditProfileForm
-=======
-from django.contrib.auth.views import PasswordChangeView
-from django.contrib.auth.models import User  
-from .models import UserProfile
-from .forms import ProfileEditForm
-from django.db.models import Q
-from matches.models import Match
->>>>>>> 59ed421 (Update user_page views.py)
 
 @login_required
 def profile_home(request):
@@ -56,28 +47,6 @@ def view_profile(request, username):
     user = get_object_or_404(User, username=username)
     profile = get_object_or_404(UserProfile, user=user)
 
-<<<<<<< HEAD
-    is_own_profile = request.user == user
-
-    try:
-        match=Match.objects.get(Q(user1=request.user,user2=user) | Q(user2=request.user,user1=user))
-        
-        if match.user1_status=='declined' or match.user2_status=='declined':
-            allow_view=False
-        else:
-            allow_view=True
-    except:
-        allow_view=False
-    finally:
-
-        return render(request, 'userpage/user_profile.html', {
-            'view_user': user,
-            'profile': profile,
-            'is_own_profile': is_own_profile,
-            'allow_view':allow_view
-        })
-    
-=======
     # Check if the current user is viewing their own profile or another user's
     is_own_profile = request.user == user
 
@@ -99,4 +68,3 @@ def view_profile(request, username):
         'view_user': user,
         'allow_view': allow_view,
     })
->>>>>>> 59ed421 (Update user_page views.py)
