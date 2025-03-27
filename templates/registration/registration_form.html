@@ -5,48 +5,69 @@
 {% endblock %}
 
 {% block content %}
-    <div class="jumbotron p-4">
-        <div class="container">
-            <h1 class="jumbotron-heading">Register Here</h1>
-        </div>
+    <!-- Hero Section with Description -->
+    <div class="hero-container">
+        <h1>Great meals, even better company.</h1>
+        <h2>Find your perfect dining match!</h2>
     </div>
 
-    <div class="container">
-        <div class="row">
-            <div class="form-group" >
-                <form role="form" method="post" action=".">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <p class="required">
-                            <label class="required" for="id_username">Username:</label>
-                            <input class="form-control" id="id_username" maxlength="30" name="username" type="text" />
-                            <span class="helptext">
-                                Required. 30 characters or fewer.
-                                Letters, digits and @/./+/-/_ only.
-                            </span>
-                        </p>
+    <!-- Register Form Section -->
+    <div class="register-container">
+        <div class="register-box">
+            <h3>Nice to meet you Stranger!</h3>
+            <p>Tell us about yourself...</p>
 
-                        <p class="required">
-                            <label class="required" for="id_email">E-mail:</label>
-                            <input class="form-control" id="id_email" name="email" type="email" />
-                        </p>
+            <form method="post" action="{% url 'registration_register' %}">
+                {% csrf_token %}
 
-                        <p class="required">
-                            <label class="required" for="id_password1">Password:</label>
-                            <input class="form-control" id="id_password1" name="password1" type="password" />
-                        </p>
+                <!-- Email Field -->
+                <div class="form-field">
+                    <!--<label for="id_email">Email</label>-->
+                    <input type="email" name="email" id="id_email" class="form-control" placeholder="Email" required>
+                </div>
 
-                        <p class="required">
-                            <label class="required" for="id_password2">Password confirmation:</label>
-                            <input class="form-control" id="id_password2" name="password2" type="password" />
-                            <span class="helptext">
-                                Enter the same password as before, for verification.
-                            </span>
-                        </p>
-                    </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
+                <!-- Password Field -->
+                <div class="form-field">
+                    <!--<label for="id_password1">Password</label>-->
+                    <input type="password" name="password1" id="id_password1" class="form-control" placeholder="Password" required>
+                </div>
+
+                <!-- Confirm Password Field -->
+                <div class="form-field">
+                    <!--<label for="id_password2">Confirm Password</label>-->
+                    <input type="password" name="password2" id="id_password2" class="form-control" placeholder="Confirm Password" required>
+                    <span class="helptext">
+                        Enter the same password as before, for verification.
+                    </span>
+                </div>
+
+                <!-- Username Field -->
+                <div class="form-field">
+                    <!--<label for="id_username">Username</label>-->
+                    <input type="text" name="username" id="id_username" class="form-control" placeholder="Username" required>
+                </div>
+
+                <!-- Phone Number Field -->
+                <div class="form-field">
+                    <!--<label for="id_phone_number">Phone Number</label>-->
+                    <input type="text" name="phone_number" id="id_phone_number" class="form-control" placeholder="Phone Number" required>
+                </div>
+
+                <!-- Age Field -->
+                <div class="form-field">
+                    <!--<label for="id_age">Age</label>-->
+                    <input type="number" name="age" id="id_age" class="form-control" placeholder="Age" required>
+                </div>
+
+                    <!-- Submit Button -->
+                <div class="form-actions">
+                    <button class="btn btn-submit" type="submit">Sign Up!</button>
+                </div>
+            </form>
+
+            <p class="signup-text">
+                Already have an account? <a href="{% url 'auth_login' %}">Log In</a>
+            </p>
         </div>
     </div>
 {% endblock %}

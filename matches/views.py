@@ -81,14 +81,6 @@ def matches_possible(request):
     return render(request, 'matches/matches_possible.html', {'matches': matches})
 
 @login_required
-def block_confirm(request):
-    return render(request, 'matches/block_confirm.html')
-
-@login_required
-def unmatch_confirm(request):
-    return render(request, 'matches/unmatch_confirm.html')
-
-@login_required
 def matches_base(request):
     return render(request, 'matches/matches_base.html')
 
