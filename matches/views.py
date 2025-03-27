@@ -146,6 +146,20 @@ def user_match_counts(request):
         'denied' : denied_count
     })
 
+def toggle_theme(request):
+    """
+    Toggle the theme (dark/light) based on the AJAX POST request.
+    Sets a cookie named 'theme' with the new value.
+    """
+    if request.method == 'POST' and request.is_ajax():
+        new_theme = request.POST.get('theme', 'light')
+        response = JsonResponse({'status': 'success', 'theme': new_theme})
+        # Set cookie for 30 days (adjust max_age as needed)
+        response.set_cookie('theme', new_theme, max_age=30*24*60*60)
+        return response
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+
 
 # def registration_preferences(request):
 #     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
