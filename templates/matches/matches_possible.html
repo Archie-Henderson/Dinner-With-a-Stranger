@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Possible Matches{% endblock %}
+
+{% block content %}
+<div class="matches-container">
+    <!-- Header Section -->
+    <div class="matches-header">
+        <h1>Matches</h1>
+        
+        <!-- Text Labels (New, Wait, Match) -->
+        <div class="matches-status">
+            <span class="status-text active">New</span>
+            <span class="status-text">Wait</span>
+            <span class="status-text">Match</span>
+        </div>
+
+        <!-- Navigation Buttons for Possible, Pending, Accepted, Denied -->
+        <div class="matches-nav">
+            <a href="{% url 'matches:matches_possible' %}" class="nav-btn active">Possible</a>
+            <a href="{% url 'matches:matches_pending' %}" class="nav-btn">Pending</a>
+            <a href="{% url 'matches:matches_accepted' %}" class="nav-btn">Accepted</a>
+            <a href="{% url 'matches:matches_denied' %}" class="nav-btn">Denied</a>
+        </div>
+    </div>
+
+    <!-- Matches Grid Section -->
+    <div class="matches-grid">
+        <!-- Loop through all the matches -->
+        {% if matches %}
+            {% for match in matches %}
+                <div class="match-card {% if match.user1_status == 'declined' or match.user2_status == 'declined' %}denied{% endif %}">
+                    <div class="match-img">
+                        <img src="{{ match.profile_picture.url }}" alt="{{ match.username }}">
+                    </div>
+                    <div class="match-info">
+                        <h2>{{ match.username }}</h2>
+                        <p>{{ match.bio }}</p>
+                        <a href="{% url 'matches:matches_possible' %}" class="match-btn">MATCH</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No matches found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -36,7 +36,7 @@ def matches_denied(request):
     return render(request, 'matches/matches_denied.html', {'matches': matches})
 
 
-@staff_required(login_url="../admin")
+@login_required
 def matches_possible(request):
     matches = Match.objects.all()
     return render(request, 'matches/matches_possible.html', {'matches': matches})
