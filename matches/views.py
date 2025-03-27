@@ -7,6 +7,10 @@ from matches.models import Match
 from user_page.models import UserProfile
 from django.db.models import Q
 
+from django.contrib import messages
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+
 
 def staff_required(login_url=None):
     return user_passes_test(lambda u: u.is_staff, login_url=login_url)

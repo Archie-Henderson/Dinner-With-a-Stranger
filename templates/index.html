@@ -3,6 +3,16 @@
 {% block title %}Welcome to Dinner with Strangers!{% endblock %}
 
 {% block content %}
+
+    <!-- Display messages if any -->
+    {% if messages %}
+        <div class="alert alert-info">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <div class="welcome-section">
         <h1>Welcome to Dinner with Strangers!</h1>
         <p>Find people with similar meal preferences and dietary needs to have a meal together. Explore new connections and expand your culinary horizons.</p>
@@ -28,4 +38,13 @@
         </div>
         
     </div>
+
+<style>
+    .alert {
+        padding: 10px;
+        background-color: #f39c12;
+        color: white;
+        margin: 10px 0;
+    }
+</style> 
 {% endblock %}

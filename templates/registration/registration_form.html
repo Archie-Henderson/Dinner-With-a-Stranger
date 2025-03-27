@@ -14,6 +14,15 @@
     <!-- Register Form Section -->
     <div class="register-container">
         <div class="register-box">
+            <div class="register-buttons">
+                <!-- Button to switch between Login/Sign Up -->
+                <button class="btn" id="login-btn">
+                    <a href="{% url 'auth_login' %}">Log In</a>
+                </button>
+                <button class="btn active" id="signup-btn">
+                    <a href="{% url 'registration_register' %}">Sign Up</a>
+                </button>
+            </div>
             <h3>Nice to meet you Stranger!</h3>
             <p>Tell us about yourself...</p>
 
