@@ -24,7 +24,7 @@ def find_new_matches(request):
 
     for other_user in UserProfile.objects.all():
         if not (Match.objects.filter(user1=user, user2=other_user) or Match.objects.filter(user1=other_user, user2=user)):
-            if other_user.age < user.age+user.max_age_difference and other_user.age > user.age-user.max_age_difference and user.age < other_user.age+other_user.max_age_difference and user.age > other_user.age-other_user.max_age_difference:
+            if ((user.age_range=='27+' and other_user.age>=27) or (other_user.age < int(user.age_range[-2:]) and other_user.age > int(user.age_range[:2]))) and ((other_user.age_range=='27+' and user.age>=27) or (user.age < int(other_user.age_range[-2:]) and user.age > int(other_user.age_range[:2]))):
                 Match.objects.create(user1=user, user2=other_user)
                 new_matches+=1
                 if new_matches>50:
