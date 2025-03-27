@@ -1,60 +1,32 @@
-{% extends 'base.html' %}
+{% extends 'matches/matches_base.html' %}
 
 {% block title %}Pending Matches{% endblock %}
+{% block matches_title %}Pending Matches — review to accept!{% endblock %}
+{% block wait_active %}active{% endblock %}
+{% block pending_active %}active{% endblock %}
 
-{% block content %}
-<div class="matches-container">
-    <div class="matches-header">
-        <h1>Pending Matches — review to accept!</h1>
-
-        <div class="matches-status">
-            <span class="status-text">New</span>
-            <span class="status-text active">Wait</span>
-            <span class="status-text">Match</span>
-        </div>
-
-        <div class="matches-nav">
-            <a href="{% url 'matches:matches_possible' %}" class="nav-btn">Possible</a>
-            <a href="{% url 'matches:matches_pending' %}" class="nav-btn active">Pending</a>
-            <a href="{% url 'matches:matches_accepted' %}" class="nav-btn">Accepted</a>
-            <a href="{% url 'matches:matches_denied' %}" class="nav-btn">Denied</a>
-        </div>
-    </div>
-
-    <div class="matches-grid">
-        {% if matches %}
-            {% for match in matches %}
-                {% if match.user1 == request.user %}
-                    {% with other_user=match.user2 %}
-                        <div class="match-card">
-                            <div class="match-img">
-                                <img src="{{ other_user.userprofile.picture.url|default:'/static/images/default.jpg' }}" alt="{{ other_user.username }}">
-                            </div>
-                            <div class="match-info">
-                                <h2>{{ other_user.username }}</h2>
-                                <p>{{ other_user.userprofile.description|default:'No bio yet!' }}</p>
-                                <a href="{% url 'matches:update_match_status' match.match_id 'accepted' %}" class="match-btn">MATCH</a>
-                            </div>
-                        </div>
-                    {% endwith %}
-                {% else %}
-                    {% with other_user=match.user1 %}
-                        <div class="match-card">
-                            <div class="match-img">
-                                <img src="{{ other_user.userprofile.picture.url|default:'/static/images/default.jpg' }}" alt="{{ other_user.username }}">
-                            </div>
-                            <div class="match-info">
-                                <h2>{{ other_user.username }}</h2>
-                                <p>{{ other_user.userprofile.description|default:'No bio yet!' }}</p>
-                                <a href="{% url 'matches:update_match_status' match.match_id 'accepted' %}" class="match-btn">MATCH</a>
-                            </div>
-                        </div>
-                    {% endwith %}
-                {% endif %}
-            {% endfor %}
-        {% else %}
-            <p>You have no pending matches.</p>
-        {% endif %}
-    </div>
-</div>
+{% block matches_grid %}
+    {% if matches %}
+        {% for match in matches %}
+            {% if match.user1 == request.user %}
+                {% with other_user=match.user2 %}
+                    {% include 'matches/match_card.html' with 
+                        other_user=other_user 
+                        action_url="{% url 'matches:update_match_status' match.match_id 'accepted' %}" 
+                        action_label='MATCH' 
+                    %}
+                {% endwith %}
+            {% else %}
+                {% with other_user=match.user1 %}
+                    {% include 'matches/match_card.html' with 
+                        other_user=other_user 
+                        action_url="{% url 'matches:update_match_status' match.match_id 'accepted' %}" 
+                        action_label='MATCH' 
+                    %}
+                {% endwith %}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <p>You have no pending matches yet.</p>
+    {% endif %}
 {% endblock %}

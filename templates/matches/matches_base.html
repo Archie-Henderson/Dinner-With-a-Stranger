@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Matches{% endblock %}
+
+{% block content %}
+<div class="matches-container">
+    <!-- Header -->
+    <div class="matches-header">
+        <h1>{% block matches_title %}Matches{% endblock %}</h1>
+
+        <!-- Status Text Labels -->
+        <div class="matches-status">
+            <span class="status-text {% block new_active %}{% endblock %}">New</span>
+            <span class="status-text {% block wait_active %}{% endblock %}">Wait</span>
+            <span class="status-text {% block match_active %}{% endblock %}">Match</span>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="matches-nav">
+            <a href="{% url 'matches:matches_possible' %}" class="nav-btn {% block possible_active %}{% endblock %}">Possible</a>
+            <a href="{% url 'matches:matches_pending' %}" class="nav-btn {% block pending_active %}{% endblock %}">Pending</a>
+            <a href="{% url 'matches:matches_accepted' %}" class="nav-btn {% block accepted_active %}{% endblock %}">Accepted</a>
+            <a href="{% url 'matches:matches_denied' %}" class="nav-btn {% block denied_active %}{% endblock %}">Denied</a>
+        </div>
+    </div>
+
+    <!-- Grid of Match Cards -->
+    <div class="matches-grid">
+        {% block matches_grid %}
+            <!-- Match cards will be inserted by child templates -->
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}
