@@ -7,67 +7,79 @@ django.setup()
 
 from django.contrib.auth.models import User
 from matches.models import Match
-from user_page.models import UserProfile
+from user_page.models import (
+    UserProfile, Cuisine, DiningVibe, DietaryNeed, Budget, AgeRange
+)
 from django.utils.crypto import get_random_string
-
 from django.contrib.auth.hashers import make_password
 
-# Set up Django environment
-
 def generate_random_match_id():
-    # Generate a random match_id for the match (unique string)
     return get_random_string(length=10).upper()
 
-def populate_users():
-    # List of fake users to add
-    users_data = [{'username': f'user{i}', 'email': f'user{i}@example.com', 'age': random.randint(18, 35), 'description': f"User {i}'s bio", 'phone_number': f'0123456789{i}', 'max_age_difference':10}for i in range(10)]
+def assign_random_preferences(profile):
+    profile.regional_cuisines.set(random.sample(list(Cuisine.objects.all()), k=2))
+    profile.dining_vibes.set(random.sample(list(DiningVibe.objects.all()), k=2))
+    profile.dietary_needs.set(random.sample(list(DietaryNeed.objects.all()), k=2))
+    profile.budgets.set(random.sample(list(Budget.objects.all()), k=1))
+    profile.age_ranges.set(random.sample(list(AgeRange.objects.all()), k=1))
 
-    # Add users to the database
-    for user_data in users_data:
-        print(user_data['username'], user_data['email'])
-        user, created = User.objects.get_or_create(username=user_data['username'], email=user_data['email'], password=make_password('password123'))
+def populate_users():
+    users_data = [
+        {
+            'username': f'user{i}',
+            'email': f'user{i}@example.com',
+            'age': random.randint(18, 35),
+            'description': f"User {i}'s bio",
+            'phone_number': f'0123456789{i}',
+        }
+        for i in range(10)
+    ]
+
+    users = []
+    for data in users_data:
+        user, created = User.objects.get_or_create(
+            username=data['username'],
+            email=data['email'],
+            defaults={'password': make_password('password123')}
+        )
         if created:
-            # Create a UserProfile for each user
-            UserProfile.objects.create(user=user, age=user_data['age'], description=user_data['description'], phone_number=user_data['phone_number'], max_age_difference=user_data['max_age_difference'])
+            profile = UserProfile.objects.create(
+                user=user,
+                age=data['age'],
+                description=data['description'],
+                phone_number=data['phone_number']
+            )
+            assign_random_preferences(profile)
             print(f"Created user: {user.username}")
         else:
             print(f"User already exists: {user.username}")
-    
-    return User.objects.all()
+        users.append(user)
+
+    return users
 
 def populate_matches(users):
-    # Generate random matches between users
-    for i in range(9):  # Create 9 matches
-        user1 = User.objects.get(username=f'user{i}')
-        user2 = User.objects.get(username=f'user{i+1}')
-        
-        # Randomly assign statuses for user1 and user2
-        user1_status = random.choice(['pending', 'accepted', 'declined'])
-        user2_status = random.choice(['pending', 'accepted', 'declined'])
-
-        # Generate a unique match_id
+    for i in range(len(users) - 1):
+        user1 = users[i]
+        user2 = users[i + 1]
         match_id = generate_random_match_id()
 
-        # Create match
         match = Match.objects.create(
             match_id=match_id,
             user1=user1,
             user2=user2,
-            user1_status=user1_status,
-            user2_status=user2_status
+            user1_status=random.choice(['pending', 'accepted', 'declined']),
+            user2_status=random.choice(['pending', 'accepted', 'declined']),
         )
-        print(f"Created match between {user1.username} and {user2.username}, match_id: {match_id}")
+        print(f"Created match: {user1.username} & {user2.username}, ID: {match_id}")
 
 def populate_preference_options():
-    from user_page.models import Cuisine, DiningVibe, DietaryNeed, Budget, AgeRange
-
     Cuisine.objects.bulk_create([
         Cuisine(name="Asian"),
         Cuisine(name="Italian"),
         Cuisine(name="Mediterranean"),
         Cuisine(name="Indian"),
         Cuisine(name="Latin American"),
-    ])
+    ], ignore_conflicts=True)
 
     DiningVibe.objects.bulk_create([
         DiningVibe(name="Fast Food"),
@@ -75,7 +87,7 @@ def populate_preference_options():
         DiningVibe(name="Healthy & Organic"),
         DiningVibe(name="Brunch & Breakfast"),
         DiningVibe(name="Café & Coffee"),
-    ])
+    ], ignore_conflicts=True)
 
     DietaryNeed.objects.bulk_create([
         DietaryNeed(name="Vegetarian"),
@@ -86,14 +98,14 @@ def populate_preference_options():
         DietaryNeed(name="Lactose Intolerant"),
         DietaryNeed(name="Pescatarian"),
         DietaryNeed(name="No Restrictions"),
-    ])
+    ], ignore_conflicts=True)
 
     Budget.objects.bulk_create([
         Budget(level="$"),
         Budget(level="$$"),
         Budget(level="$$$"),
         Budget(level="$$$$"),
-    ])
+    ], ignore_conflicts=True)
 
     AgeRange.objects.bulk_create([
         AgeRange(label="16-19"),
@@ -101,12 +113,10 @@ def populate_preference_options():
         AgeRange(label="21-23"),
         AgeRange(label="24-26"),
         AgeRange(label="27+"),
-    ])
+    ], ignore_conflicts=True)
 
-# Start execution here! because above this point, we define functions; these are not executed unless we call them.
 if __name__ == '__main__':
-    print('Starting population script...')
-    populate_preference_options() # Create available preferences to choose from
-    users = populate_users()  # Create users
-    populate_matches(users)   # Create matches
+    populate_preference_options()
+    users = populate_users()
+    populate_matches(users)
     print('Population complete.')

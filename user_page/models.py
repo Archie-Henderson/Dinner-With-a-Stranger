@@ -35,7 +35,6 @@ class UserProfile(models.Model):
     description = models.CharField(max_length=200, blank=True)
     phone_number = models.CharField(max_length=20, unique=True)
     age = models.IntegerField(validators=[MinValueValidator(16), MaxValueValidator(100)])
-    max_age_difference = models.PositiveIntegerField(validators=[MaxValueValidator(20)])
 
     # All multi-selects
     regional_cuisines = models.ManyToManyField(Cuisine, blank=True)
