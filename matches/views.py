@@ -18,7 +18,7 @@ def matches_pending(request):
     matches = Match.objects.filter(
         Q(user1=request.user, user1_status='accepted', user2_status='pending') | 
         Q(user2=request.user, user2_status='accepted', user1_status='pending')
-        ).values()
+        )
     return render(request, 'matches/matches_pending.html', {'matches': matches})
 
 @login_required
@@ -42,7 +42,7 @@ def matches_possible(request):
     matches = Match.objects.filter(
         Q(user1=request.user, user1_status='pending') | 
         Q(user2=request.user, user2_status='pending')
-        ).exclude(Q(user1_status='declined') | Q(user2_status='declined')).values()
+        ).exclude(Q(user1_status='declined') | Q(user2_status='declined'))
     return render(request, 'matches/matches_possible.html', {'matches': matches})
 
 @login_required
