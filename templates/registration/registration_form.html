@@ -20,43 +20,50 @@
             <form method="post" action="{% url 'registration_register' %}">
                 {% csrf_token %}
 
+                <!-- Username Field -->
+                <div class="form-field">
+                    <label for="id_username">Username</label>
+                    <input type="text" name="username" id="id_username" class="form-control" placeholder="Username" required>
+                </div>
+                
                 <!-- Email Field -->
                 <div class="form-field">
-                    <!--<label for="id_email">Email</label>-->
+                    <label for="id_email">Email</label>
                     <input type="email" name="email" id="id_email" class="form-control" placeholder="Email" required>
                 </div>
 
                 <!-- Password Field -->
                 <div class="form-field">
-                    <!--<label for="id_password1">Password</label>-->
+                    <label for="id_password1">Password</label>
                     <input type="password" name="password1" id="id_password1" class="form-control" placeholder="Password" required>
                 </div>
 
                 <!-- Confirm Password Field -->
                 <div class="form-field">
-                    <!--<label for="id_password2">Confirm Password</label>-->
+                    <label for="id_password2">Confirm Password</label>
                     <input type="password" name="password2" id="id_password2" class="form-control" placeholder="Confirm Password" required>
                     <span class="helptext">
                         Enter the same password as before, for verification.
+                        Password must be at least 8 characters and not entirely numeric.
                     </span>
-                </div>
-
-                <!-- Username Field -->
-                <div class="form-field">
-                    <!--<label for="id_username">Username</label>-->
-                    <input type="text" name="username" id="id_username" class="form-control" placeholder="Username" required>
                 </div>
 
                 <!-- Phone Number Field -->
                 <div class="form-field">
-                    <!--<label for="id_phone_number">Phone Number</label>-->
+                    <label for="id_phone_number">Phone Number</label>
                     <input type="text" name="phone_number" id="id_phone_number" class="form-control" placeholder="Phone Number" required>
                 </div>
 
                 <!-- Age Field -->
                 <div class="form-field">
-                    <!--<label for="id_age">Age</label>-->
+                    <label for="id_age">Age</label>
                     <input type="number" name="age" id="id_age" class="form-control" placeholder="Age" required>
+                </div>
+
+                <!-- Age Field -->
+                <div class="form-field">
+                    <label for="id_age">Max Age Difference</label>
+                    <input type="number" name="max_age_difference" id="id_max_age_difference" class="form-control" placeholder="Max Age Difference" required>
                 </div>
 
                     <!-- Submit Button -->
