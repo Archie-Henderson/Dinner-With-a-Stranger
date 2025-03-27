@@ -17,13 +17,16 @@
                         <h5 class="mt-2">{{ user.username }}</h5>
                         <p><strong>Phone Number:</strong> {{ user.profile.phone_number }}</p>
                         <p><strong>Age:</strong> {{ user.profile.age }}</p>
+                        
+                        <h5>Short Bio</h5>
+                        <p>{{ user.profile.bio|default:"No bio yet! :(" }}</p>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-8">
                 <div class="profile-main">
-                    <h3>Profile</h3>
+                    <h3>Your Profile!</h3>
                     <h5>Email</h5>
                     <p>{{ user.email }}</p>
 
@@ -58,9 +61,6 @@
                             {% endfor %}
                         </div>
                     </div>
-
-                    <h5>Short Bio</h5>
-                    <p>{{ user.profile.bio|default:"No bio yet! :(" }}</p>
                 </div>
             </div>
         </div>
