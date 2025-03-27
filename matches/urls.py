@@ -2,8 +2,6 @@ from django.urls import path
 from matches import views
 from .views import total_matches, user_match_counts
 
-
-
 app_name = 'matches'
 
 urlpatterns = [
@@ -19,4 +17,7 @@ urlpatterns = [
     path('api/user-match-counts/', user_match_counts, name='user-match-counts'),
    # path('registration/preferences/', views.registration_preferences, name='registration_preferences'),
 
+
 ]
+
+#checking if I can commit 
