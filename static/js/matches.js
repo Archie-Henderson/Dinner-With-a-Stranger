@@ -1,6 +1,6 @@
-$(document).ready(function() {
-    alert('Hello, world!');
-    });
+// $(document).ready(function() {
+//     alert('Hello, world!');
+//     });
     
 //shows match count on the index page
 $(document).ready(function () {
