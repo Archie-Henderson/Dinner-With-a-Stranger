@@ -17,11 +17,12 @@ def generate_random_match_id():
     return get_random_string(length=10).upper()
 
 def assign_random_preferences(profile):
-    profile.regional_cuisines.set(random.sample(list(Cuisine.objects.all()), k=2))
-    profile.dining_vibes.set(random.sample(list(DiningVibe.objects.all()), k=2))
-    profile.dietary_needs.set(random.sample(list(DietaryNeed.objects.all()), k=2))
+    profile.regional_cuisines.set(random.sample(list(Cuisine.objects.all()), k=min(2, Cuisine.objects.count())))
+    profile.dining_vibes.set(random.sample(list(DiningVibe.objects.all()), k=min(2, DiningVibe.objects.count())))
+    profile.dietary_needs.set(random.sample(list(DietaryNeed.objects.all()), k=min(2, DietaryNeed.objects.count())))
     profile.budgets.set(random.sample(list(Budget.objects.all()), k=1))
     profile.age_ranges.set(random.sample(list(AgeRange.objects.all()), k=1))
+    profile.save()
 
 def populate_users():
     users_data = [
@@ -52,7 +53,7 @@ def populate_users():
             assign_random_preferences(profile)
             print(f"Created user: {user.username}")
         else:
-            print(f"User already exists: {user.username}")
+            print(f"ℹUser already exists: {user.username}")
         users.append(user)
 
     return users
@@ -117,6 +118,9 @@ def populate_preference_options():
 
 if __name__ == '__main__':
     populate_preference_options()
+
     users = populate_users()
+
     populate_matches(users)
-    print('Population complete.')
+
+    print("Population complete.")

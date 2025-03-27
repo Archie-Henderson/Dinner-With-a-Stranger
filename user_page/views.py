@@ -11,7 +11,7 @@ from matches.models import Match
 from user_page.models import UserProfile
 from django.db.models import Q
 
-from .forms import EditProfileForm, UserPreferencesForm
+from .forms import EditProfileForm
 
 @login_required
 def profile_home(request):

@@ -7,7 +7,7 @@ from django.urls import reverse
 from matches.models import Match
 from user_page.models import UserProfile
 from django.db.models import Q
-from user_page.forms import UserPreferencesForm  
+#from user_page.forms import UserPreferencesForm  
 
 from django.contrib import messages
 from django.contrib.auth import logout
