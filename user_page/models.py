@@ -37,11 +37,12 @@ class UserProfile(models.Model):
     age = models.IntegerField(validators=[MinValueValidator(16), MaxValueValidator(100)])
 
     # All multi-selects
-    regional_cuisines = models.ManyToManyField(Cuisine, blank=True)
-    dining_vibes = models.ManyToManyField(DiningVibe, blank=True)
-    dietary_needs = models.ManyToManyField(DietaryNeed, blank=True)
-    budgets = models.ManyToManyField(Budget, blank=True)
-    age_ranges = models.ManyToManyField(AgeRange, blank=True)
+    regional_cuisines = models.ManyToManyField(Cuisine)
+    dining_vibes = models.ManyToManyField(DiningVibe)
+    dietary_needs = models.ManyToManyField(DietaryNeed)
+    budgets = models.ManyToManyField(Budget)
+    age_ranges = models.ManyToManyField(AgeRange
+                                        )
 
     def __str__(self):
         return self.user.username
