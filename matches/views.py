@@ -10,7 +10,7 @@ def staff_required(login_url=None):
 
 # Home page
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'matches/index.html')
 
 @login_required
 def match_list(request):
