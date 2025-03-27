@@ -30,9 +30,10 @@ def find_new_matches(request):
                     return
 
 def index(request):
-    return render(request, 'index.html')
-
-
+    if not request.user.is_authenticated and 'logged_out' not in request.session:
+        messages.info(request, "You've logged out successfully!")
+        request.session['logged_out'] = True  # Mark the session to ensure the message appears once
+    return render(request, 'matches/index.html')
 
 @login_required
 def matches_pending(request):
@@ -146,9 +147,3 @@ def user_match_counts(request):
 
 def registration_preferences(request):
     return render(request, 'registration_preferences.html')
-
-def custom_logout(request):
-    logout(request)
-    messages.success(request, "You have been logged out. Hope you had a good Dining with Strangers!")
-    return redirect(reverse('matches:index'))  # Redirect to the home page
-
