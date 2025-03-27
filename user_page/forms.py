@@ -4,50 +4,50 @@ from .models import UserProfile, Cuisine, DiningVibe, DietaryNeed, Budget, AgeRa
 class EditProfileForm(forms.ModelForm):
     description = forms.CharField(
         widget=forms.Textarea(attrs={'placeholder': 'Tell us about yourself...'}),
-        required=False  
-    )  
+        required=False
+    )
 
-    picture = forms.ImageField(required=False)  
+    picture = forms.ImageField(required=False)
 
     phone_number = forms.CharField(
-        max_length=15, 
-        required=False, 
+        max_length=15,
+        required=True,
         widget=forms.TextInput(attrs={'placeholder': 'Phone Number'})
     )
 
     age = forms.IntegerField(
-        required=False, 
+        required=True,
         widget=forms.NumberInput(attrs={'placeholder': 'Age'})
     )
 
     regional_cuisines = forms.ModelMultipleChoiceField(
         queryset=Cuisine.objects.all(),
         widget=forms.CheckboxSelectMultiple,
-        required=False
+        required=True
     )
 
     dining_vibes = forms.ModelMultipleChoiceField(
         queryset=DiningVibe.objects.all(),
         widget=forms.CheckboxSelectMultiple,
-        required=False
+        required=True
     )
 
     budgets = forms.ModelMultipleChoiceField(
         queryset=Budget.objects.all(),
         widget=forms.CheckboxSelectMultiple,
-        required=False
+        required=True
     )
 
     age_ranges = forms.ModelMultipleChoiceField(
         queryset=AgeRange.objects.all(),
         widget=forms.CheckboxSelectMultiple,
-        required=False
+        required=True
     )
 
     dietary_needs = forms.ModelMultipleChoiceField(
         queryset=DietaryNeed.objects.all(),
         widget=forms.CheckboxSelectMultiple,
-        required=False
+        required=True
     )
 
     class Meta:
