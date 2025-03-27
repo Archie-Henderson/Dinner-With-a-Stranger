@@ -7,15 +7,15 @@
     <!-- Header Section -->
     <div class="matches-header">
         <h1>Matches</h1>
-        
-        <!-- Text Labels (New, Wait, Match) -->
+
+        <!-- Text Labels -->
         <div class="matches-status">
             <span class="status-text active">New</span>
             <span class="status-text">Wait</span>
             <span class="status-text">Match</span>
         </div>
 
-        <!-- Navigation Buttons for Possible, Pending, Accepted, Denied -->
+        <!-- Navigation Buttons -->
         <div class="matches-nav">
             <a href="{% url 'matches:matches_possible' %}" class="nav-btn active">Possible</a>
             <a href="{% url 'matches:matches_pending' %}" class="nav-btn">Pending</a>
@@ -26,26 +26,35 @@
 
     <!-- Matches Grid Section -->
     <div class="matches-grid">
-        <!-- Loop through all the matches -->
         {% if matches %}
             {% for match in matches %}
                 {% if match.user1 == request.user %}
                     {% with other_user=match.user2 %}
+                        <div class="match-card">
+                            <div class="match-img">
+                                <img src="{{ other_user.userprofile.picture.url|default:'/static/images/default.jpg' }}" alt="{{ other_user.username }}">
+                            </div>
+                            <div class="match-info">
+                                <h2>{{ other_user.username }}</h2>
+                                <p>{{ other_user.userprofile.description|default:'No bio yet!' }}</p>
+                                <a href="{% url 'matches:update_match_status' match.match_id 'accepted' %}" class="match-btn">MATCH</a>
+                            </div>
+                        </div>
+                    {% endwith %}
                 {% else %}
                     {% with other_user=match.user1 %}
+                        <div class="match-card">
+                            <div class="match-img">
+                                <img src="{{ other_user.userprofile.picture.url|default:'/static/images/default.jpg' }}" alt="{{ other_user.username }}">
+                            </div>
+                            <div class="match-info">
+                                <h2>{{ other_user.username }}</h2>
+                                <p>{{ other_user.userprofile.description|default:'No bio yet!' }}</p>
+                                <a href="{% url 'matches:update_match_status' match.match_id 'accepted' %}" class="match-btn">MATCH</a>
+                            </div>
+                        </div>
+                    {% endwith %}
                 {% endif %}
-            
-                <div class="match-card">
-                    <div class="match-img">
-                        <img src="{{ other_user.userprofile.picture.url|default:'/static/images/default.jpg' }}" alt="{{ other_user.username }}">
-                    </div>
-                    <div class="match-info">
-                        <h2>{{ other_user.username }}</h2>
-                        <p>{{ other_user.userprofile.description|default:'No bio yet!' }}</p>
-                        <a href="{% url 'matches:update_match_status' match.match_id 'accepted' %}" class="match-btn">MATCH</a>
-                    </div>
-                </div>
-                {% endwith %}
             {% endfor %}
         {% else %}
             <p>No matches found.</p>
