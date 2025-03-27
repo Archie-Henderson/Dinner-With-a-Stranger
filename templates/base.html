@@ -23,6 +23,29 @@
         </div>
         
         {% include 'partials/footer.html' %}
+        <script>
+            // Function to get the CSRF token from cookies
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let cookie of cookies) {
+                        cookie = cookie.trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            const csrftoken = getCookie('csrftoken');
+
+            // Setup AJAX to automatically include the CSRF token in the header of every request.
+            $.ajaxSetup({
+                headers: { "X-CSRFToken": csrftoken }
+            });
+        </script>
         <script src="/static/js/script.js"></script>
     </body>
 </html>
