@@ -7,6 +7,7 @@ from django.urls import reverse
 from matches.models import Match
 from user_page.models import UserProfile
 from django.db.models import Q
+from user_page.forms import UserPreferencesForm  
 
 from django.contrib import messages
 from django.contrib.auth import logout
@@ -145,5 +146,15 @@ def user_match_counts(request):
         'denied' : denied_count
     })
 
-def registration_preferences(request):
-    return render(request, 'registration_preferences.html')
+
+# def registration_preferences(request):
+#     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+
+#     if request.method == "POST":
+#         form = UserPreferencesForm(request.POST, instance=user_profile)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('matches_possible')  
+#         form = UserPreferencesForm(instance=user_profile)
+
+#     return render(request, 'registration_preferences.html', {'form': form})
