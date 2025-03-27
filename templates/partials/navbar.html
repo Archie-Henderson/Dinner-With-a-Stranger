@@ -12,9 +12,16 @@
         <!-- Links in the navbar -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
+                
+                <!-- Dark Mode Toggle -->
+                <li class="nav-item">
+                    <button class="nav-link btn btn-outline-secondary" id="dark-mode-toggle">
+                        <i class="bi bi-moon"></i> <!-- Add moon icon for dark mode -->
+                    </button>
+                </li>
+                
                 {% if user.is_authenticated %}
                     <!-- If logged in -->
-                    
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'user_page:profile_home' %}">Your Profile</a>
                     </li>
@@ -37,3 +44,20 @@
         </div>
     </div>
 </nav>
+<style>
+    #dark-mode-toggle {
+        background-color: #f39c12;
+        color: white;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+    }
+
+    #dark-mode-toggle:hover {
+        background-color: #ff6f00;
+    }
+</style>
