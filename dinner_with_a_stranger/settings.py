@@ -97,7 +97,8 @@ REGISTRATION_AUTO_LOGIN = True
 
 # The URL that Django redirects users to after logging in.
 LOGIN_REDIRECT_URL = 'matches:matches_possible'
-LOGOUT_REDIRECT_URL = '/'
+SIMPLE_BACKEND_REDIRECT_URL = 'matches:matches_possible'
+LOGOUT_REDIRECT_URL = 'index'
 
 # The page users are directed to if they are not logged in.
 # This was set in a previous chapter. The registration package uses this, too.

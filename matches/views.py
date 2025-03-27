@@ -1,7 +1,8 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404,redirect
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
+from django.urls import reverse
 
 from matches.models import Match
 from user_page.models import UserProfile
@@ -9,7 +10,6 @@ from django.db.models import Q
 
 from django.contrib import messages
 from django.contrib.auth import logout
-from django.shortcuts import redirect
 
 
 def staff_required(login_url=None):
@@ -150,5 +150,5 @@ def registration_preferences(request):
 def custom_logout(request):
     logout(request)
     messages.success(request, "You have been logged out. Hope you had a good Dining with Strangers!")
-    return redirect('index')  # Redirect to the home page
+    return redirect(reverse('matches:index'))  # Redirect to the home page
 
