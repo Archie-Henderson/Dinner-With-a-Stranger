@@ -22,6 +22,17 @@ def matches_pending(request):
     return render(request, 'matches/matches_pending.html', {'matches': matches})
 
 @login_required
+def ajax_matches_pending(request):
+    matches = Match.objects.filter(
+        Q(user1=request.user) | Q(user2=request.user), 
+        Q(user1_status='pending') | Q(user2_status='pending')
+    ).exclude(
+        Q(user1_status='declined') | Q(user2_status='declined')
+    ).values()  
+    return JsonResponse({'matches': list(matches)})
+
+
+@login_required
 def matches_accepted(request):
     matches = Match.objects.filter(Q(user1=request.user) | Q(user2=request.user),
         user2_status='accepted', user1_status='accepted')
