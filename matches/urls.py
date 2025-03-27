@@ -17,5 +17,6 @@ urlpatterns = [
     path('<str:match_id>/confirm/<str:action_type>/', views.match_action_confirm, name='match_action_confirm'),
     path('api/total-matches/', total_matches, name='total-matches'),
     path('api/user-match-counts/', user_match_counts, name='user-match-counts'),
+    path('registration/preferences/', views.registration_preferences, name='registration_preferences'),
 
 ]

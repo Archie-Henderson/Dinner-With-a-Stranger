@@ -30,7 +30,7 @@ def find_new_matches(request):
                     return
 
 def index(request):
-    return render(request, 'matches/index.html')
+    return render(request, 'index.html')
 
 
 
@@ -143,6 +143,9 @@ def user_match_counts(request):
         'pending': pending_count,
         'denied' : denied_count
     })
+
+def registration_preferences(request):
+    return render(request, 'registration_preferences.html')
 
 def custom_logout(request):
     logout(request)
