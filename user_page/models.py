@@ -10,6 +10,7 @@ class UserProfile(models.Model):
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=20, unique=True)
     age = models.IntegerField(validators=[MinValueValidator(16), MaxValueValidator(100)])
+    max_age_difference = models.PositiveIntegerField(validators=[MaxValueValidator(20)])
 
     def __str__(self):
         return self.user.username

@@ -1,14 +1,29 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.db.models import Q
 from django.conf import settings
-from .models import Match
+
+from matches.models import Match
+from user_page.models import UserProfile
+from django.db.models import Q
 
 
 def staff_required(login_url=None):
     return user_passes_test(lambda u: u.is_staff, login_url=login_url)
 
+def find_new_matches(request):
+    user=request.user
+    user_profile=get_object_or_404(UserProfile, user=user)
+
+    new_matches=0
+
+    for other_user in UserProfile.objects.all():
+        if not (Match.objects.filter(user1=user, user2=other_user) or Match.objects.filter(user1=other_user, user2=user)):
+            if other_user.age < user.age+user.max_age_difference and other_user.age > user.age-user.max_age_difference and user.age < other_user.age+other_user.max_age_difference and user.age > other_user.age-other_user.max_age_difference:
+                Match.objects.create(user1=user, user2=other_user)
+                new_matches+=1
+                if new_matches>50:
+                    return
 
 def index(request):
     return render(request, 'matches/index.html')
@@ -54,6 +69,14 @@ def matches_possible(request):
         Q(user1=request.user, user1_status='pending') | 
         Q(user2=request.user, user2_status='pending')
         ).exclude(Q(user1_status='declined') | Q(user2_status='declined'))
+    
+    if not matches:
+        find_new_matches(request)
+        matches = Match.objects.filter(
+            Q(user1=request.user, user1_status='pending') | 
+            Q(user2=request.user, user2_status='pending')
+            ).exclude(Q(user1_status='declined') | Q(user2_status='declined'))
+        
     return render(request, 'matches/matches_possible.html', {'matches': matches})
 
 @login_required

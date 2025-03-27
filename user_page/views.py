@@ -1,12 +1,14 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.urls import reverse
 
 from django.contrib.auth.views import PasswordChangeView
+from matches.views import find_new_matches
 
 from django.contrib.auth.models import User  
 from matches.models import Match
-from .models import UserProfile
+from user_page.models import UserProfile
 from django.db.models import Q
 
 from .forms import EditProfileForm
@@ -24,16 +26,20 @@ def profile_home(request):
 
 @login_required
 def edit_profile(request):
+    if request.method=='POST':
+        find_new_matches(request)
+        redirect(reverse('user_page:user_profile'))
+        
     profile = get_object_or_404(UserProfile, user=request.user)
 
     if request.method == 'POST':
-        form = ProfileEditForm(request.POST, request.FILES, instance=profile)
+        form = EditProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
             messages.success(request, "Your profile has been updated successfully.")
             return redirect('profile_home')  
     else:
-        form = ProfileEditForm(instance=profile)
+        form = EditProfileForm(instance=profile)
 
     return render(request, 'userpage/user_profile_edit.html', {'form': form})
 
