@@ -106,6 +106,7 @@ def populate_preference_options():
 # Start execution here! because above this point, we define functions; these are not executed unless we call them.
 if __name__ == '__main__':
     print('Starting population script...')
+    populate_preference_options() # Create available preferences to choose from
     users = populate_users()  # Create users
     populate_matches(users)   # Create matches
     print('Population complete.')
