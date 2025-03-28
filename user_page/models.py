@@ -29,7 +29,7 @@ class AgeRange(models.Model):
         return self.label
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     website = models.URLField(blank=True)
     picture = models.ImageField(upload_to='profile_images', blank=True)
     description = models.CharField(max_length=200, blank=True)
