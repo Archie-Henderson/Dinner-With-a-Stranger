@@ -85,17 +85,22 @@ def matches_accepted(request):
 
 @login_required
 def matches_denied(request):
-    # Fetch the denied matches, ensuring the status is correctly set
     matches = Match.objects.filter(
         (Q(user1=request.user) & Q(user1_status='declined')) |
         (Q(user2=request.user) & Q(user2_status='declined'))
     )
-    
-    matches_with_others = [(match, match.get_other_user(request.user)) for match in matches]
-    
+
+    # Show only if YOU declined
+    filtered = []
+    for match in matches:
+        if (match.user1 == request.user and match.user1_status == 'declined') or \
+            (match.user2 == request.user and match.user2_status == 'declined'):
+            filtered.append((match, match.get_other_user(request.user)))
+
     return render(request, 'matches/matches_denied.html', {
-        'matches_with_others': matches_with_others
+        'matches_with_others': filtered
     })
+
 
 @login_required
 def matches_base(request):
@@ -110,20 +115,31 @@ def update_match_status(request, match_id, status):
     match = get_object_or_404(Match, match_id=match_id)
 
     if request.user == match.user1:
-        match.user1_status = status
+        if status == 'accepted':
+            match.user1_status = 'accepted'
+            if match.user2_status == 'declined':
+                match.user2_status = 'pending'
+        elif status == 'declined':
+            if request.user == match.user1:
+                match.user1_status = 'declined'
+            else:
+                match.user2_status = 'declined'
     elif request.user == match.user2:
-        match.user2_status = status
+        if status == 'accepted':
+            match.user2_status = 'accepted'
+            if match.user1_status == 'declined':
+                match.user1_status = 'pending'
+        elif status == 'declined':
+            if request.user == match.user1:
+                match.user1_status = 'declined'
+            else:
+                match.user2_status = 'declined'
     else:
         return JsonResponse({'error': 'Unauthorized'}, status=403)
 
     match.save()
-
-    # Stay on same page — redirect back
-    #return redirect(request.META.get('HTTP_REFERER', 'matches:matches_base'))
-
-
-    # Reload the page (Do not redirect to another page)
     return redirect(request.META.get('HTTP_REFERER'))
+
 
 @login_required
 @require_POST
@@ -161,7 +177,6 @@ def possible_match_deny(request, user_id):
     if other_user == request.user:
         return HttpResponse("Cannot decline yourself", status=400)
 
-    # Check if match already exists
     match = Match.objects.filter(
         (Q(user1=request.user, user2=other_user) | Q(user1=other_user, user2=request.user))
     ).first()
@@ -169,19 +184,28 @@ def possible_match_deny(request, user_id):
     if match:
         if match.user1 == request.user:
             match.user1_status = 'declined'
-        if match.user2 == request.user:
+        else:
             match.user2_status = 'declined'
         match.save()
     else:
-        # No match yet — create it as declined
+        # No match yet → create
         match_id = get_random_string(30).upper()
-        Match.objects.create(
-            match_id=match_id,
-            user1=request.user,
-            user2=other_user,
-            user1_status='declined',
-            user2_status='declined'
-        )
+        if request.user.id < other_user.id:
+            Match.objects.create(
+                match_id=match_id,
+                user1=request.user,
+                user2=other_user,
+                user1_status='declined',
+                user2_status='pending'
+            )
+        else:
+            Match.objects.create(
+                match_id=match_id,
+                user1=other_user,
+                user2=request.user,
+                user1_status='pending',
+                user2_status='declined'
+            )
 
     return redirect('matches:matches_possible')
 
