@@ -107,16 +107,8 @@ def update_match_status(request, match_id, status):
 
     if request.user == match.user1:
         match.user1_status = status
-        if status == 'accepted':
-            match.user2_status = 'accepted'
-        elif status == 'declined':
-            match.user2_status = 'declined'
     elif request.user == match.user2:
         match.user2_status = status
-        if status == 'accepted':
-            match.user1_status = 'accepted'
-        elif status == 'declined':
-            match.user1_status = 'declined'
     else:
         return JsonResponse({'error': 'Unauthorized'}, status=403)
 
