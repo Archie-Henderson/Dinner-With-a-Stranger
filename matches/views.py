@@ -248,10 +248,8 @@ def total_matches(request):
 def user_match_counts(request):
     user = request.user
     
-    # Debug first
     print(f"User: {user.username}, ID: {user.id}")
     
-    # Get all matches for this user (for debugging)
     all_matches = Match.objects.filter(Q(user1=user) | Q(user2=user))
     print(f"Total matches for user: {all_matches.count()}")
     for match in all_matches[:10]:  # Show first 10 for debugging
