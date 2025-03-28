@@ -66,14 +66,14 @@ def ajax_matches_pending(request):
 
 @login_required
 def matches_accepted(request):
-    # Fetch the accepted matches after the status change
     matches = Match.objects.filter(
-        (Q(user1=request.user) & Q(user1_status='accepted')) |
-        (Q(user2=request.user) & Q(user2_status='accepted'))
+        (Q(user1=request.user) | Q(user2=request.user)),
+        user1_status='accepted',
+        user2_status='accepted'
     )
-    
+
     matches_with_others = [(match, match.get_other_user(request.user)) for match in matches]
-    
+
     return render(request, 'matches/matches_accepted.html', {
         'matches_with_others': matches_with_others
     })
@@ -125,23 +125,25 @@ def update_match_status(request, match_id, status):
 def possible_match_accept(request, user_id):
     other_user = get_object_or_404(User, id=user_id)
 
-    # Prevent matching yourself
     if other_user == request.user:
         return HttpResponse("Cannot match yourself", status=400)
 
-    # Check if match already exists
-    if Match.objects.filter(
+    match = Match.objects.filter(
         (Q(user1=request.user, user2=other_user) | Q(user1=other_user, user2=request.user))
-    ).exists():
+    ).first()
+
+    if match:
         return HttpResponse("Match already exists", status=400)
 
     match_id = get_random_string(30).upper()
+
+    # Your status = accepted, their status = pending
     Match.objects.create(
         match_id=match_id,
         user1=request.user,
         user2=other_user,
         user1_status='accepted',
-        user2_status='accepted'
+        user2_status='pending'
     )
 
     return redirect(request.META.get('HTTP_REFERER'))
