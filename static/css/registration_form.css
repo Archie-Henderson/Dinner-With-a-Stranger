@@ -1,4 +1,3 @@
-/* Base Styles */
 body {
     font-family: Arial, sans-serif;
     background-color: #f5f5f5;
@@ -6,10 +5,10 @@ body {
     padding: 0;
 }
 
-/* Hero Section Styles */
+
 .hero-container {
-    background-color: #F8B400; /* Yellow background */
-    color: white;
+    background-color: white; 
+    color: black;
     padding: 80px 0;
     text-align: center;
 }
@@ -24,18 +23,18 @@ body {
     margin: 10px 0;
 }
 
-/* Register Form Container */
+
 .register-container {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 40px 0;
-    min-height: 70vh; /* Center form vertically */
+    min-height: 70vh; 
 }
 
-/* Register Box */
+
 .register-box {
-    background-color: rgb(255, 224, 139); /* Lighter yellow */
+    background-color: rgb(255, 224, 139); 
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     padding: 40px;
     width: 450px;
@@ -43,7 +42,7 @@ body {
     text-align: center;
 }
 
-/* Register Button Styles */
+
 .register-buttons {
     display: flex;
     justify-content: space-between;
@@ -51,26 +50,26 @@ body {
 }
 
 .btn {
-    background-color: #F8B400; /* Yellow background */
+    background-color: #F8B400;
     border: none;
-    padding: 12px 24px; /* Larger padding */
+    padding: 12px 24px; 
     color: black;
     font-size: 16px;
     cursor: pointer;
     border-radius: 5px;
-    width: 48%; /* Align buttons side by side */
+    width: 48%; 
     transition: background-color 0.3s;
 }
 
 .btn:hover {
-    background-color: #e09000; /* Darker yellow on hover */
+    background-color: #e09000; 
 }
 
 .btn.active {
     background-color: #b97f00;
 }
 
-/* Form Fields */
+
 .form-field {
     margin-bottom: 20px;
     text-align: left;
@@ -94,11 +93,11 @@ body {
 }
 
 .form-control:focus {
-    border-color: #F8B400; /* Highlight color */
+    border-color: #F8B400; 
     outline: none;
 }
 
-/* Form Actions */
+
 .form-actions {
     margin-top: 20px;
 }
@@ -119,14 +118,14 @@ body {
     background-color: #e09000;
 }
 
-/* Help Text */
+
 .helptext {
     font-size: 12px;
     color: #666;
     margin-top: 5px;
 }
 
-/* Sign Up Text */
+
 .signup-text {
     margin-top: 20px;
     font-size: 14px;
@@ -141,7 +140,7 @@ body {
     text-decoration: underline;
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
     .hero-container h1 {
         font-size: 2.5rem;
