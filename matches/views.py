@@ -7,7 +7,6 @@ from django.urls import reverse
 from matches.models import Match
 from user_page.models import UserProfile
 from django.db.models import Q
-#from user_page.forms import UserPreferencesForm  
 
 from django.contrib import messages
 from django.contrib.auth import logout
@@ -17,23 +16,33 @@ def staff_required(login_url=None):
     return user_passes_test(lambda u: u.is_staff, login_url=login_url)
 
 def __check_matched(user, other_user):
-    if not (Match.objects.filter(user1=user, user2=other_user) or Match.objects.filter(user1=other_user, user2=user)):
-        return True
-    else:
-        return False
+    return not Match.objects.filter(
+        Q(user1=user, user2=other_user) | Q(user1=other_user, user2=user)
+    ).exists()
+
 
 def __check_age_range(user, other_user):
-    if ((user.age_range=='27+' and other_user.age>=27) or (other_user.age < int(user.age_range[-2:]) and other_user.age > int(user.age_range[:2]))) and ((other_user.age_range=='27+' and user.age>=27) or (user.age < int(other_user.age_range[-2:]) and user.age > int(other_user.age_range[:2]))):
-        return True
-    else:
+    user_ranges = set(user.age_ranges.values_list('label', flat=True))
+    other_ranges = set(other_user.age_ranges.values_list('label', flat=True))
+
+    def in_range(age, ranges):
+        for r in ranges:
+            if r == '27+' and age >= 27:
+                return True
+            parts = r.split('-')
+            if len(parts) == 2 and parts[0].isdigit() and parts[1].isdigit():
+                if int(parts[0]) <= age <= int(parts[1]):
+                    return True
         return False
+
+    return in_range(user.age, other_ranges) and in_range(other_user.age, user_ranges)
+
     
 def __check_cuisines(user, other_user):
-    for cuisine in user.cuisines:
-        if cuisine in other_user.cuisines:
-            return True
-        
-    return False
+    user_cuisines = set(user.regional_cuisines.values_list('name', flat=True))
+    other_cuisines = set(other_user.regional_cuisines.values_list('name', flat=True))
+    return bool(user_cuisines & other_cuisines)
+
 
 def find_new_matches(request):
     user=request.user
@@ -55,12 +64,24 @@ def index(request):
     return render(request, 'matches/index.html')
 
 @login_required
-def matches_pending(request):
-    matches = Match.objects.filter(
-        Q(user1=request.user, user1_status='accepted', user2_status='pending') | 
-        Q(user2=request.user, user2_status='accepted', user1_status='pending')
+def matches_possible(request):
+    try:
+        matches = Match.objects.filter(
+            (Q(user1=request.user) & Q(user1_status='pending')) |
+            (Q(user2=request.user) & Q(user2_status='pending'))
+        ).exclude(
+            Q(user1_status='declined') | Q(user2_status='declined')
         )
-    return render(request, 'matches/matches_pending.html', {'matches': matches})
+    except Match.DoesNotExist:
+        find_new_matches(request)
+        matches = Match.objects.filter(
+            (Q(user1=request.user) & Q(user1_status='pending')) |
+            (Q(user2=request.user) & Q(user2_status='pending'))
+        ).exclude(
+            Q(user1_status='declined') | Q(user2_status='declined')
+        )
+
+    return render(request, 'matches/matches_possible.html', {'matches': matches})
 
 @login_required
 def ajax_matches_pending(request):
@@ -83,28 +104,10 @@ def matches_accepted(request):
 @login_required
 def matches_denied(request):
     matches = Match.objects.filter(
-        (Q(user1=request.user) & (Q(user1_status='declined') | Q(user2_status='declined'))) |
-        (Q(user2=request.user) & (Q(user1_status='declined') | Q(user2_status='declined')))
+        (Q(user1=request.user) & Q(user1_status='declined')) |
+        (Q(user2=request.user) & Q(user2_status='declined'))
     )
     return render(request, 'matches/matches_denied.html', {'matches': matches})
-
-
-@login_required
-def matches_possible(request):
-    try:
-        matches = Match.objects.filter(
-            Q(user1=request.user, user1_status='pending') | 
-            Q(user2=request.user, user2_status='pending')
-            ).exclude(Q(user1_status='declined') | Q(user2_status='declined'))
-    
-    except:
-        find_new_matches(request)
-        matches = Match.objects.filter(
-            Q(user1=request.user, user1_status='pending') | 
-            Q(user2=request.user, user2_status='pending')
-            ).exclude(Q(user1_status='declined') | Q(user2_status='declined'))
-        
-    return render(request, 'matches/matches_possible.html', {'matches': matches})
 
 @login_required
 def matches_base(request):
@@ -152,17 +155,34 @@ def total_matches(request):
 @login_required
 def user_match_counts(request):
     user = request.user
-    possible_count = Match.objects.filter(user=user,status="possible").count()
-    accepted_count = Match.objects.filter(user=user,status="accepted").count()
-    pending_count = Match.objects.filter(user=user, status="pending").count()
-    denied_count = Match.objects.filter(user=user, status="denied").count()
+
+    possible_count = Match.objects.filter(
+        Q(user1=user, user1_status='pending') | 
+        Q(user2=user, user2_status='pending')
+    ).exclude(Q(user1_status='declined') | Q(user2_status='declined')).count()
+
+    accepted_count = Match.objects.filter(
+        Q(user1=user) | Q(user2=user),
+        user1_status='accepted', user2_status='accepted'
+    ).count()
+
+    denied_count = Match.objects.filter(
+        (Q(user1=user) & Q(user1_status='declined')) |
+        (Q(user2=user) & Q(user2_status='declined'))
+    ).count()
+
+    pending_count = Match.objects.filter(
+        (Q(user1=user) & Q(user1_status='accepted') & Q(user2_status='pending')) |
+        (Q(user2=user) & Q(user2_status='accepted') & Q(user1_status='pending'))
+    ).count()
 
     return JsonResponse({
         'possible': possible_count,
         'accepted': accepted_count,
         'pending': pending_count,
-        'denied' : denied_count
+        'denied': denied_count
     })
+
 
 def toggle_theme(request):
     """
