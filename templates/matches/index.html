@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 
+{% load static %}  
+
 {% block title %}Welcome to Dinner with Stranger!{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
 
 {% block content %}
 
