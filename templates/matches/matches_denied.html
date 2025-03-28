@@ -1,33 +1,26 @@
 {% extends 'matches/matches_base.html' %}
+{% load staticfiles %}
 
 {% block title %}Denied Matches{% endblock %}
 {% block matches_title %}Denied Matches — you declined your friendship :( {% endblock %}
 {% block denied_active %}active{% endblock %}
 
 {% block matches_grid %}
-    {% if matches %}
-        {% for match in matches %}
-            {% if match.user1 == request.user %}
-                {% with other_user=match.user2 %}
-                    {% include 'matches/match_card.html' with 
-                        other_user=other_user 
-                        action_label='Accept Again' 
-                        action_url="{% url 'matches:update_match_status' match.match_id 'accepted' %}" 
-                        action_class='denied-btn' 
-                        extra_class='denied' 
-                    %}
+    {% if matches_with_others %}
+        {% for match, other_user in matches_with_others %}
+            <div class="denied-wrapper">
+                {% with other_user=other_user %}
+                    {% with action_label='Accept Again' %}
+                        {% with action_url=match.get_accept_again_url %}
+                        {% with action_class='denied-btn' %}
+                            {% with extra_class='denied' %}
+                            {% include 'matches/match_card.html' %}
+                            {% endwith %}
+                        {% endwith %}
+                        {% endwith %}
+                    {% endwith %}
                 {% endwith %}
-            {% else %}
-                {% with other_user=match.user1 %}
-                    {% include 'matches/match_card.html' with 
-                        other_user=other_user 
-                        action_label='Accept Again' 
-                        action_url="{% url 'matches:update_match_status' match.match_id 'accepted' %}" 
-                        action_class='denied-btn' 
-                        extra_class='denied' 
-                    %}
-                {% endwith %}
-            {% endif %}
+            </div>
         {% endfor %}
     {% else %}
         <p>No denied matches found.</p>

@@ -15,15 +15,14 @@ from django.contrib.auth import logout
 def staff_required(login_url=None):
     return user_passes_test(lambda u: u.is_staff, login_url=login_url)
 
-def __check_matched(user, other_user):
+def __check_matched(user_profile, other_profile):
     return not Match.objects.filter(
-        Q(user1=user, user2=other_user) | Q(user1=other_user, user2=user)
+        Q(user1=user_profile.user, user2=other_profile.user) | Q(user1=other_profile.user, user2=user_profile.user)
     ).exists()
 
-
-def __check_age_range(user, other_user):
-    user_ranges = set(user.age_ranges.values_list('label', flat=True))
-    other_ranges = set(other_user.age_ranges.values_list('label', flat=True))
+def __check_age_range(profile1, profile2):
+    user_ranges = set(profile1.age_ranges.values_list('label', flat=True))
+    other_ranges = set(profile2.age_ranges.values_list('label', flat=True))
 
     def in_range(age, ranges):
         for r in ranges:
@@ -35,7 +34,7 @@ def __check_age_range(user, other_user):
                     return True
         return False
 
-    return in_range(user.age, other_ranges) and in_range(other_user.age, user_ranges)
+    return in_range(profile1.age, other_ranges) and in_range(profile2.age, user_ranges)
 
     
 def __check_cuisines(user, other_user):
@@ -51,7 +50,7 @@ def find_new_matches(request):
     new_matches=0
 
     for other_user in UserProfile.objects.all():
-        if __check_matched(user,other_user) and __check_age_range(user,other_user) and __check_cuisines(user, other_user):
+        if __check_matched(user_profile, other_user) and __check_age_range(user_profile, other_user) and __check_cuisines(user_profile, other_user):
             Match.objects.create(user1=user, user2=other_user)
             new_matches+=1
             if new_matches>50:
@@ -65,23 +64,24 @@ def index(request):
 
 @login_required
 def matches_possible(request):
-    try:
-        matches = Match.objects.filter(
-            (Q(user1=request.user) & Q(user1_status='pending')) |
-            (Q(user2=request.user) & Q(user2_status='pending'))
-        ).exclude(
-            Q(user1_status='declined') | Q(user2_status='declined')
-        )
-    except Match.DoesNotExist:
-        find_new_matches(request)
-        matches = Match.objects.filter(
-            (Q(user1=request.user) & Q(user1_status='pending')) |
-            (Q(user2=request.user) & Q(user2_status='pending'))
-        ).exclude(
-            Q(user1_status='declined') | Q(user2_status='declined')
-        )
+    # find new potential matches
+    find_new_matches(request)
+
+    # Fetch only those matches where the current user initiated the match
+    # and is still waiting for the other person to respond
+    matches = Match.objects.filter(
+        (Q(user1=request.user) & Q(user1_status='pending') & Q(user2_status='pending'))
+    )
 
     return render(request, 'matches/matches_possible.html', {'matches': matches})
+
+@login_required
+def matches_pending(request):
+    matches = Match.objects.filter(
+        (Q(user1=request.user) & Q(user1_status='pending') & Q(user2_status='accepted')) |
+        (Q(user2=request.user) & Q(user2_status='pending') & Q(user1_status='accepted'))
+    )
+    return render(request, 'matches/matches_pending.html', {'matches': matches})
 
 @login_required
 def ajax_matches_pending(request):
@@ -100,14 +100,19 @@ def matches_accepted(request):
         user2_status='accepted', user1_status='accepted')
     return render(request, 'matches/matches_accepted.html', {'matches': matches})
 
-
 @login_required
 def matches_denied(request):
     matches = Match.objects.filter(
         (Q(user1=request.user) & Q(user1_status='declined')) |
         (Q(user2=request.user) & Q(user2_status='declined'))
     )
-    return render(request, 'matches/matches_denied.html', {'matches': matches})
+
+    # Create a list of tuples: (match, other_user)
+    matches_with_others = [(match, match.get_other_user(request.user)) for match in matches]
+
+    return render(request, 'matches/matches_denied.html', {
+        'matches_with_others': matches_with_others
+    })
 
 @login_required
 def matches_base(request):
