@@ -15,10 +15,10 @@ from django.views.decorators.http import require_POST
 
 from django.utils.crypto import get_random_string
 
-
 def staff_required(login_url=None):
     return user_passes_test(lambda u: u.is_staff, login_url=login_url)
 
+##### checks for matches_possible 
 def __check_matched(user_profile, other_profile):
     return not Match.objects.filter(
         Q(user1=user_profile.user, user2=other_profile.user) | 
@@ -41,12 +41,10 @@ def __check_age_range(profile1, profile2):
 
     return in_range(profile1.age, other_ranges) and in_range(profile2.age, user_ranges)
 
-    
 def __check_cuisines(user, other_user):
     user_cuisines = set(user.regional_cuisines.values_list('name', flat=True))
     other_cuisines = set(other_user.regional_cuisines.values_list('name', flat=True))
     return bool(user_cuisines & other_cuisines)
-
 
 def find_new_matches(request):
     user_profile = get_object_or_404(UserProfile, user=request.user)
@@ -59,7 +57,7 @@ def find_new_matches(request):
             new_matches += 1
             if new_matches > 50:
                 return
-
+#####
 
 
 def index(request):
@@ -68,30 +66,30 @@ def index(request):
         request.session['logged_out'] = True  # Mark the session to ensure the message appears once
     return render(request, 'matches/index.html')
 
+
+def get_possible_profiles(user_profile):
+    possible_profiles = []
+
+    for other_profile in UserProfile.objects.exclude(user=user_profile.user):
+        if __check_matched(user_profile, other_profile) and __check_age_range(user_profile, other_profile) and __check_cuisines(user_profile, other_profile):
+            possible_profiles.append(other_profile)
+
+    return possible_profiles
+
 @login_required
 def matches_possible(request):
-    user = request.user
+    user_profile = get_object_or_404(UserProfile, user=request.user)
 
-    # Exclude users already matched or declined
-    declined_matches = Match.objects.filter(
-        (Q(user1=user) & Q(user1_status='declined')) | 
-        (Q(user2=user) & Q(user2_status='declined'))
-    )
-    declined_users = [m.get_other_user(user) for m in declined_matches]
+    # Find users who have not interacted with current user
+    possible_profiles = []
+    for other_profile in UserProfile.objects.exclude(user=request.user):
+        # 1. No match exists yet
+        if __check_matched(user_profile, other_profile):
+            # 2. Preferences compatible
+            if __check_age_range(user_profile, other_profile) and __check_cuisines(user_profile, other_profile):
+                possible_profiles.append(other_profile)
 
-    matched_users = Match.objects.filter(
-        Q(user1=user) | Q(user2=user)
-    ).values_list('user1', 'user2')
-
-    matched_user_ids = set()
-    for u1, u2 in matched_users:
-        matched_user_ids.add(u1)
-        matched_user_ids.add(u2)
-    matched_user_ids.discard(user.id)  # remove yourself
-
-    possible_users = UserProfile.objects.exclude(id__in=matched_user_ids).exclude(id=user.id).exclude(id__in=[u.id for u in declined_users])
-
-    return render(request, 'matches/matches_possible.html', {'possible_users': possible_users})
+    return render(request, 'matches/matches_possible.html', {'possible_users': possible_profiles})
 
 @login_required
 def matches_pending(request):
