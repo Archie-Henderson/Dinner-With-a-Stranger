@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
-
-{% load static %}  
+{% load static %}
 
 {% block title %}
     Register
@@ -11,17 +10,14 @@
 {% endblock %}
 
 {% block content %}
-    <!-- Hero Section with Description -->
     <div class="hero-container">
         <h1>Great meals, even better company.</h1>
         <h2>Find your perfect dining match!</h2>
     </div>
 
-    <!-- Register Form Section -->
     <div class="register-container">
         <div class="register-box">
             <div class="register-buttons">
-                <!-- Button to switch between Login/Sign Up -->
                 <button class="btn" id="login-btn">
                     <a href="{% url 'auth_login' %}">Log In</a>
                 </button>
@@ -32,38 +28,10 @@
             <h3>Nice to meet you Stranger!</h3>
             <p>Tell us about yourself...</p>
 
-            <form method="post" action="{% url 'registration_preferences' %}">
+            <form method="post" action="">
                 {% csrf_token %}
+                {{ form.as_p }}
 
-                <!-- Username Field -->
-                <div class="form-field">
-                    <label for="id_username">Username</label>
-                    <input type="text" name="username" id="id_username" class="form-control" placeholder="Username" required>
-                </div>
-                
-                <!-- Email Field -->
-                <div class="form-field">
-                    <label for="id_email">Email</label>
-                    <input type="email" name="email" id="id_email" class="form-control" placeholder="Email" required>
-                </div>
-
-                <!-- Password Field -->
-                <div class="form-field">
-                    <label for="id_password1">Password</label>
-                    <input type="password" name="password1" id="id_password1" class="form-control" placeholder="Password" required>
-                </div>
-
-                <!-- Confirm Password Field -->
-                <div class="form-field">
-                    <label for="id_password2">Confirm Password</label>
-                    <input type="password" name="password2" id="id_password2" class="form-control" placeholder="Confirm Password" required>
-                    <span class="helptext">
-                        Enter the same password as before, for verification.
-                        Password must be at least 8 characters and not entirely numeric.
-                    </span>
-                </div>
-
-                    <!-- Submit Button -->
                 <div class="form-actions">
                     <button class="btn btn-submit" type="submit">Sign Up!</button>
                 </div>
