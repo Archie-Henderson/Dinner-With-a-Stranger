@@ -89,8 +89,8 @@ class PopulationScriptTest(TestCase):
         users_len=len(users)
         users_strs=map(str,users)
 
-        self.assertEqual(users_len, 30)
-        for i in range(30):
+        self.assertEqual(users_len, 50)
+        for i in range(50):
             self.assertTrue(f'user{i}' in users_strs)
         
     def test_user_profiles(self):        
@@ -98,8 +98,8 @@ class PopulationScriptTest(TestCase):
         profiles_len=len(profiles)
         profiles_str=map(str,profiles)
 
-        self.assertEqual(profiles_len, 30)
-        for i in range(30):
+        self.assertEqual(profiles_len, 50)
+        for i in range(50):
             self.assertTrue(f'user{i}' in profiles_str)
             self.assertTrue(f"User {i}'s bio" == profiles[i].description)
 

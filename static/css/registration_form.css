@@ -1,0 +1,166 @@
+/* Base Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+/* Hero Section Styles */
+.hero-container {
+    background-color: #F8B400; /* Yellow background */
+    color: white;
+    padding: 80px 0;
+    text-align: center;
+}
+
+.hero-container h1 {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.hero-container h2 {
+    font-size: 1.5rem;
+    margin: 10px 0;
+}
+
+/* Register Form Container */
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px 0;
+    min-height: 70vh; /* Center form vertically */
+}
+
+/* Register Box */
+.register-box {
+    background-color: rgb(255, 224, 139); /* Lighter yellow */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    width: 450px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* Register Button Styles */
+.register-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.btn {
+    background-color: #F8B400; /* Yellow background */
+    border: none;
+    padding: 12px 24px; /* Larger padding */
+    color: black;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 48%; /* Align buttons side by side */
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #e09000; /* Darker yellow on hover */
+}
+
+.btn.active {
+    background-color: #b97f00;
+}
+
+/* Form Fields */
+.form-field {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-field label {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.form-control:focus {
+    border-color: #F8B400; /* Highlight color */
+    outline: none;
+}
+
+/* Form Actions */
+.form-actions {
+    margin-top: 20px;
+}
+
+.btn-submit {
+    background-color: #F8B400;
+    border: none;
+    padding: 14px 24px;
+    color: white;
+    font-size: 18px;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.btn-submit:hover {
+    background-color: #e09000;
+}
+
+/* Help Text */
+.helptext {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Sign Up Text */
+.signup-text {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.signup-text a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.signup-text a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-container h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero-container h2 {
+        font-size: 1.2rem;
+    }
+
+    .register-box {
+        width: 90%;
+        padding: 30px;
+    }
+
+    .btn {
+        font-size: 14px;
+    }
+
+    .form-control {
+        font-size: 14px;
+    }
+}
