@@ -1,33 +1,33 @@
 /* Base Styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #d3cece;
+    background-color: #e7c13a; /* Yellow background for the page */
     margin: 0;
     padding: 0;
 }
 
 .navbar {
-    color: #F8B400; /* Yellow background for navbar */
-    font-size: 1.5rem;
+    background-color: #F8B400; /* Yellow background for navbar */
+    color: black; /* Set navbar text color to black */
+    font-size: 1.5rem; /* Adjust font size for navbar */
 }
-
 
 /* Hero Section Styles */
 .hero-container {
-    background-color: #F8B400; /* Yellow background */
-    color: black;
-    padding: 80px 0; /* More space at the top */
+    background-color: white; /* White background for the hero section */
+    color: black; /* Black text color */
+    padding: 60px 0; /* More space at the top */
     text-align: center;
 }
 
 .hero-container h1 {
-    font-size: 1.5rem; /* Larger title */
+    font-size: 1.8rem; /* Smaller text for the hero section */
     font-weight: bold;
     margin: 0;
 }
 
 .hero-container h2 {
-    font-size: 1.5rem;
+    font-size: 1.2rem; /* Smaller text for the description */
     margin: 10px 0;
 }
 
@@ -37,13 +37,13 @@ body {
     justify-content: center;
     align-items: center;
     margin: 40px 0;
-    min-height: 70vh; /* Make sure the form is centered vertically */
+    min-height: 70vh; /* Ensure the form is centered vertically */
 }
 
 /* Login Box */
 .login-box {
-    background-color: rgb(238, 219, 151);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Deeper shadow */
+    background-color: rgb(238, 219, 151); /* Light yellow background */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
     padding: 40px;
     width: 400px;
     border-radius: 10px;
@@ -60,12 +60,12 @@ body {
 .btn {
     background-color: #F8B400; /* Yellow background for buttons */
     border: none;
-    padding: 12px 24px; /* Bigger padding */
-    color: rgb(0, 0, 0);
+    padding: 12px 24px; /* Increase padding for larger buttons */
+    color: black; /* Text color */
     font-size: 16px;
     cursor: pointer;
     border-radius: 5px;
-    width: 48%; /* Align buttons side by side */
+    width: 48%; /* Make buttons side by side */
     transition: background-color 0.3s;
 }
 
@@ -91,7 +91,7 @@ body {
 
 .form-control {
     width: 100%;
-    padding: 12px; /* Larger input fields */
+    padding: 12px;
     margin-top: 5px;
     border-radius: 5px;
     border: 1px solid #ccc;
@@ -101,7 +101,7 @@ body {
 }
 
 .form-control:focus {
-    border-color: #F8B400; /* Highlight color */
+    border-color: #F8B400; /* Highlight color on focus */
     outline: none;
 }
 
@@ -111,7 +111,7 @@ body {
 }
 
 .btn-submit {
-    background-color: #F8B400;
+    background-color: #F8B400; /* Yellow background */
     border: none;
     padding: 14px 24px;
     color: white;
@@ -123,7 +123,7 @@ body {
 }
 
 .btn-submit:hover {
-    background-color: #e09000;
+    background-color: #e09000; /* Darker shade for hover */
 }
 
 /* Forgot Password */
@@ -161,7 +161,7 @@ body {
 
     .login-box {
         width: 90%;
-        padding: 30px; /* Adjust padding on smaller screens */
+        padding: 30px;
     }
 
     .btn {
