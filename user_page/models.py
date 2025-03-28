@@ -41,8 +41,7 @@ class UserProfile(models.Model):
     dining_vibes = models.ManyToManyField(DiningVibe)
     dietary_needs = models.ManyToManyField(DietaryNeed)
     budgets = models.ManyToManyField(Budget)
-    age_ranges = models.ManyToManyField(AgeRange
-                                        )
+    age_ranges = models.ManyToManyField(AgeRange)
 
     def __str__(self):
         return self.user.username
