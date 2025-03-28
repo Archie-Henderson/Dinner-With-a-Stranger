@@ -63,6 +63,13 @@ class PageSetupTests(TestCase):
 
             self.assertTrue(index_mapping_exists, f"{FAILURE_HEADER}The {page} URL mapping could not be found. Check matches' urls.py module.{FAILURE_FOOTER}")
             
+    def test_response(self):        
+        for (page, values) in self.pages.items():
+
+            response = self.client.get(reverse(f'matches:{page}'))
+
+            self.assertEqual(response.status_code, 200, f"{FAILURE_HEADER}Requesting the {page} page failed. Check your URLs and view.{FAILURE_FOOTER}")
+
     def test_match_model(self):
         user1=User.objects.create(username='test1')
         user2=User.objects.create(username='test2')
@@ -71,12 +78,13 @@ class PageSetupTests(TestCase):
         self.assertEqual(match1.user2_status, 'pending')
 
 class PopulationScriptTest(TestCase):
-    def test_users(self):
+    def setup(self):
         population_script.populate_users()
         population_script.populate_preference_options()
         population_script.populate_matches()
         population_script.assign_random_preferences()
 
+    def test_users(self):
         users=User.objects.all()
         users_len=len(users)
         users_strs=map(str,users)
@@ -85,12 +93,7 @@ class PopulationScriptTest(TestCase):
         for i in range(30):
             self.assertTrue(f'user{i}' in users_strs)
         
-    def test_user_profiles(self):             
-        population_script.populate_users()
-        population_script.populate_preference_options()
-        population_script.populate_matches()
-        population_script.assign_random_preferences()
-
+    def test_user_profiles(self):        
         profiles=UserProfile.objects.all()
         profiles_len=len(profiles)
         profiles_str=map(str,profiles)
@@ -101,12 +104,56 @@ class PopulationScriptTest(TestCase):
             self.assertTrue(f"User {i}'s bio" == profiles[i].description)
 
     def test_matches(self):
-        population_script.populate_users()
-        population_script.populate_preference_options()
-        population_script.populate_matches()
-        population_script.assign_random_preferences()
-
         matches=Match.objects.all()
         matches_len=len(matches)
 
         self.assertEquals(matches_len, 100)
+
+class ViewTests(TestCase):
+    def setUp(self):
+        population_script.populate_users
+        population_script.populate_preference_options
+        population_script.populate_matches
+        population_script.assign_random_preferences
+
+    def test_index_template_used(self):
+        self.response = self.client.get(reverse_lazy('index'))
+        self.content = self.response.content.decode()
+
+        self.assertTemplateUsed(self.response, 'matches/index.html')
+
+    def test_match_action_confirm_template_used(self):
+        self.response = self.client.get(reverse('matches:match_action_confirm', kwargs={'match_id':None, 'action_type':'accepted'}))
+        self.content = self.response.content.decode()
+
+        self.assertTemplateUsed(self.response, 'matches/match_action_confirm.html')
+
+    def test_matches_accepted_template_used(self):
+        self.response = self.client.get(reverse('matches:matches_accepted'))
+        self.content = self.response.content.decode()
+
+        self.assertTemplateUsed(self.response, 'matches/matches_accepted.html')
+
+    def test_matches_base_template_used(self):
+        self.response = self.client.get(reverse('matches:matches_base'))
+        self.content = self.response.content.decode()
+
+        self.assertTemplateUsed(self.response, 'matches/matches_base.html')
+
+    def test_matches_denied_template_used(self):
+        self.response = self.client.get(reverse('matches:matches_denied'))
+        self.content = self.response.content.decode()
+
+        self.assertTemplateUsed(self.response, 'matches/matches_denied.html')
+
+    def test_matches_pending_template_used(self):
+        self.response = self.client.get(reverse('matches:matches_pending'))
+        self.content = self.response.content.decode()
+
+        self.assertTemplateUsed(self.response, 'matches/matches_pending.html')
+
+    def test_matches_possible_template_used(self):
+        self.response = self.client.get(reverse('matches:matches_possible'))
+        self.content = self.response.content.decode()
+
+        self.assertTemplateUsed(self.response, 'matches/matches_possible.html')
