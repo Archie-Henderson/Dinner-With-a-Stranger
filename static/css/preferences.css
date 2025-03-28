@@ -69,3 +69,14 @@ button.btn-primary {
 button.btn-primary:hover {
     background-color: #e9c55a;
 }
+
+@media (max-width: 576px) {
+    .container {
+        padding: 20px;
+    }
+
+    button.btn-primary {
+        font-size: 1rem;
+        padding: 10px;
+    }
+}
