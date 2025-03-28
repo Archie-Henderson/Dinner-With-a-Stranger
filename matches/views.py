@@ -106,16 +106,8 @@ def update_match_status(request, match_id, status):
 
     if request.user == match.user1:
         match.user1_status = status
-        if status == 'accepted':
-            match.user2_status = 'accepted'
-        elif status == 'declined':
-            match.user2_status = 'declined'
     elif request.user == match.user2:
         match.user2_status = status
-        if status == 'accepted':
-            match.user1_status = 'accepted'
-        elif status == 'declined':
-            match.user1_status = 'declined'
     else:
         return JsonResponse({'error': 'Unauthorized'}, status=403)
 
@@ -220,36 +212,54 @@ def total_matches(request):
     return JsonResponse({'total_matches': count})
 
 
+
 @login_required
 def user_match_counts(request):
     user = request.user
-
+    
+    # Debug first
+    print(f"User: {user.username}, ID: {user.id}")
+    
+    # Get all matches for this user (for debugging)
+    all_matches = Match.objects.filter(Q(user1=user) | Q(user2=user))
+    print(f"Total matches for user: {all_matches.count()}")
+    for match in all_matches[:10]:  # Show first 10 for debugging
+        print(f"Match ID: {match.match_id}, User1: {match.user1.username}, Status: {match.user1_status}, User2: {match.user2.username}, Status: {match.user2_status}")
+    
+    # Simplified queries
     possible_count = Match.objects.filter(
-        Q(user1=user, user1_status='pending') | 
-        Q(user2=user, user2_status='pending')
-    ).exclude(Q(user1_status='declined') | Q(user2_status='declined')).count()
-
+        (Q(user1=user) | Q(user2=user)),
+        Q(user1_status='pending') | Q(user2_status='pending')
+    ).exclude(
+        Q(user1_status='declined') | Q(user2_status='declined')
+    ).count()
+    
     accepted_count = Match.objects.filter(
-        Q(user1=user) | Q(user2=user),
-        user1_status='accepted', user2_status='accepted'
+        (Q(user1=user) | Q(user2=user)),
+        user1_status='accepted', 
+        user2_status='accepted'
     ).count()
-
+    
     denied_count = Match.objects.filter(
-        (Q(user1=user) & Q(user1_status='declined')) |
-        (Q(user2=user) & Q(user2_status='declined'))
+        (Q(user1=user) | Q(user2=user)),
+        Q(user1_status='declined') | Q(user2_status='declined')
     ).count()
-
+    
     pending_count = Match.objects.filter(
-        (Q(user1=user) & Q(user1_status='accepted') & Q(user2_status='pending')) |
-        (Q(user2=user) & Q(user2_status='accepted') & Q(user1_status='pending'))
+        (Q(user1=user) | Q(user2=user)),
+        (Q(user1_status='accepted', user2_status='pending') | 
+         Q(user2_status='accepted', user1_status='pending'))
     ).count()
-
-    return JsonResponse({
+    
+    result = {
         'possible': possible_count,
         'accepted': accepted_count,
         'pending': pending_count,
         'denied': denied_count
-    })
+    }
+    print(f"Counts: {result}")
+    
+    return JsonResponse(result)
 
 
 def toggle_theme(request):
