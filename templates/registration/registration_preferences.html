@@ -10,10 +10,10 @@
     <h2>Great meals, even better company.</h2>
     <p>Find your perfect dining match!</p>
 
-    <form method="post" action="{% url 'matches:matches_possible' %}" enctype="multipart/form-data">
+    <form method="post" action="{% url 'registration_preferences' %}" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <!-- 👤 Personal Info Section -->
+        <!-- Personal Info Section -->
         <div class="form-group">
             <label for="{{ form.age.id_for_label }}">Your Age</label>
             {{ form.age }}
@@ -34,7 +34,7 @@
             {{ form.description }}
         </div>
 
-        <!-- 🍽️ Preferences Grid Section -->
+        <!-- Preferences Grid Section -->
         <div class="preference-grid">
 
             <div class="form-group preference-box">
