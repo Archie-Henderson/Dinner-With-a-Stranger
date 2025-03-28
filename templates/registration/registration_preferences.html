@@ -4,7 +4,7 @@
 <div class="container mt-5">
     <h2 class="mb-4">Set Your Dining Preferences</h2>
 
-    <form method="post" action="." enctype="multipart/form-data">
+    <form method="post" action="{% url 'matches:matches_possible' %}" enctype="multipart/form-data">
         {% csrf_token %}
         
         <div class="form-group">
