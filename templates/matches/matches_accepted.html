@@ -1,30 +1,24 @@
 {% extends 'matches/matches_base.html' %}
+{% load staticfiles %}
 
 {% block title %}Accepted Matches{% endblock %}
 {% block matches_title %}Accepted Matches — already your friends!{% endblock %}
-{% block match_active %}active{% endblock %}
 {% block accepted_active %}active{% endblock %}
 
 {% block matches_grid %}
-    {% if matches %}
-        {% for match in matches %}
-            {% if match.user1 == request.user %}
-                {% with other_user=match.user2 %}
-                    {% include 'matches/match_card.html' with 
-                        other_user=other_user 
-                        action_label='Unmatch' 
-                        action_url='{% url "matches:update_match_status" match.match_id "declined" %}' 
-                    %}
-                {% endwith %}
-            {% else %}
-                {% with other_user=match.user1 %}
-                    {% include 'matches/match_card.html' with 
-                        other_user=other_user 
-                        action_label='Unmatch' 
-                        action_url='{% url "matches:update_match_status" match.match_id "declined" %}' 
-                    %}
-                {% endwith %}
-            {% endif %}
+    {% if matches_with_others %}
+        {% for match, other_user in matches_with_others %}
+            <div class="accepted-wrapper">
+                <form action="{% url 'matches:update_match_status' match.match_id 'declined' %}" method="POST">
+                    {% csrf_token %}
+                    <button class="unmatch-btn" type="submit">
+                        Unmatch
+                    </button>
+                </form>
+                <div class="match-card">
+                    {% include 'matches/match_card.html' with other_user=other_user %}
+                </div>
+            </div>
         {% endfor %}
     {% else %}
         <p>No accepted matches found.</p>

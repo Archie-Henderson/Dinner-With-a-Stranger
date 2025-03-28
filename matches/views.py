@@ -96,20 +96,29 @@ def ajax_matches_pending(request):
 
 @login_required
 def matches_accepted(request):
-    matches = Match.objects.filter(Q(user1=request.user) | Q(user2=request.user),
-        user2_status='accepted', user1_status='accepted')
-    return render(request, 'matches/matches_accepted.html', {'matches': matches})
+    # Fetch the accepted matches after the status change
+    matches = Match.objects.filter(
+        (Q(user1=request.user) & Q(user1_status='accepted')) |
+        (Q(user2=request.user) & Q(user2_status='accepted'))
+    )
+    
+    matches_with_others = [(match, match.get_other_user(request.user)) for match in matches]
+    
+    return render(request, 'matches/matches_accepted.html', {
+        'matches_with_others': matches_with_others
+    })
+
 
 @login_required
 def matches_denied(request):
+    # Fetch the denied matches, ensuring the status is correctly set
     matches = Match.objects.filter(
         (Q(user1=request.user) & Q(user1_status='declined')) |
         (Q(user2=request.user) & Q(user2_status='declined'))
     )
-
-    # Create a list of tuples: (match, other_user)
+    
     matches_with_others = [(match, match.get_other_user(request.user)) for match in matches]
-
+    
     return render(request, 'matches/matches_denied.html', {
         'matches_with_others': matches_with_others
     })
@@ -119,32 +128,58 @@ def matches_base(request):
     return render(request, 'matches/matches_base.html')
 
 # Update match status for the current user (for AJAX or link buttons)
-@login_required
-def update_match_status(request, match_id, decision):
-    match = get_object_or_404(Match, match_id=match_id)
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from .models import Match
 
-    if decision not in ['accepted', 'declined', 'pending']:
+@login_required
+def update_match_status(request, match_id, status):
+    # Ensure the status is valid
+    if status not in ['accepted', 'declined', 'pending']:
         return JsonResponse({'error': 'Invalid status'}, status=400)
 
+    match = get_object_or_404(Match, match_id=match_id)
+
+    # Check if the current user is one of the match participants
     if request.user == match.user1:
-        match.user1_status = decision
+        match.user1_status = status
     elif request.user == match.user2:
-        match.user2_status = decision
+        match.user2_status = status
     else:
         return JsonResponse({'error': 'Unauthorized'}, status=403)
 
+    # Save the updated match status
     match.save()
-    return JsonResponse({'status': 'updated', 'match_id': match_id})
+
+    # Debugging - Ensure that the status is updated
+    print(f"Updated match {match.match_id}: {match.user1_status}, {match.user2_status}")
+
+    # Reload the page (Do not redirect to another page)
+    return redirect(request.META.get('HTTP_REFERER'))
 
 @login_required
 def match_action_confirm(request, match_id, action_type):
     match = get_object_or_404(Match, match_id=match_id)
-    
-    if action_type not in ['deny', 'unmatch']:
+
+    # Check if the action is valid
+    if action_type not in ['deny', 'unmatch', 'accept']:
         return HttpResponse("Invalid action", status=400)
 
     other_user = match.user1 if match.user2 == request.user else match.user2
 
+    if action_type == 'accept':
+        # If the user wants to accept, render the confirmation page
+        if request.method == 'POST':
+            # If it's a POST request, update the match status
+            return redirect('matches:update_match_status', match_id=match.match_id, decision='accepted')
+        return render(request, 'matches/match_accept_confirm.html', {
+            'other_user': other_user,
+            'match': match,
+            'action_type': action_type,
+        })
+
+    # Handle other actions like deny or unmatch
     return render(request, 'matches/match_action_confirm.html', {
         'other_user': other_user,
         'match': match,

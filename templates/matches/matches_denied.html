@@ -9,17 +9,15 @@
     {% if matches_with_others %}
         {% for match, other_user in matches_with_others %}
             <div class="denied-wrapper">
-                {% with other_user=other_user %}
-                    {% with action_label='Accept Again' %}
-                        {% with action_url=match.get_accept_again_url %}
-                        {% with action_class='denied-btn' %}
-                            {% with extra_class='denied' %}
-                            {% include 'matches/match_card.html' %}
-                            {% endwith %}
-                        {% endwith %}
-                        {% endwith %}
-                    {% endwith %}
-                {% endwith %}
+                <form action="{% url 'matches:update_match_status' match.match_id 'accepted' %}" method="POST">
+                    {% csrf_token %}
+                    <button class="denied-btn" type="submit">
+                        Accept Again
+                    </button>
+                </form>
+                <div class="match-card">
+                    {% include 'matches/match_card.html' with other_user=other_user %}
+                </div>
             </div>
         {% endfor %}
     {% else %}
