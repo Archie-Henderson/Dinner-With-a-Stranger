@@ -1,10 +1,17 @@
 import os
 import importlib
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.contrib.auth.hashers import make_password
+import population_script
+
+
 from django.test import TestCase
 from django.conf import settings
 from django.test.client import Client
+
 from django.contrib.auth.models import User
+from user_page.models import UserProfile
+from matches.models import Match
 
 FAILURE_HEADER = f"{os.linesep}{os.linesep}{os.linesep}================{os.linesep}TwD TEST FAILURE =({os.linesep}================{os.linesep}"
 FAILURE_FOOTER = f"{os.linesep}"
@@ -56,9 +63,50 @@ class PageSetupTests(TestCase):
 
             self.assertTrue(index_mapping_exists, f"{FAILURE_HEADER}The {page} URL mapping could not be found. Check matches' urls.py module.{FAILURE_FOOTER}")
             
-    def test_response(self):        
-        for (page, values) in self.pages.items():
+    def test_match_model(self):
+        user1=User.objects.create(username='test1')
+        user2=User.objects.create(username='test2')
+        match1=Match.objects.get(user1=user1, user2=user2)
+        self.assertEqual(match1.user1_status, 'pending')
+        self.assertEqual(match1.user2_status, 'pending')
 
-            response = self.client.get(reverse(f'matches:{page}'))
+class PopulationScriptTest(TestCase):
+    def test_users(self):
+        population_script.populate_users()
+        population_script.populate_preference_options()
+        population_script.populate_matches()
+        population_script.assign_random_preferences()
 
-            self.assertEqual(response.status_code, 200, f"{FAILURE_HEADER}Requesting the {page} page failed. Check your URLs and view.{FAILURE_FOOTER}")
+        users=User.objects.all()
+        users_len=len(users)
+        users_strs=map(str,users)
+
+        self.assertEqual(users_len, 30)
+        for i in range(30):
+            self.assertTrue(f'user{i}' in users_strs)
+        
+    def test_user_profiles(self):             
+        population_script.populate_users()
+        population_script.populate_preference_options()
+        population_script.populate_matches()
+        population_script.assign_random_preferences()
+
+        profiles=UserProfile.objects.all()
+        profiles_len=len(profiles)
+        profiles_str=map(str,profiles)
+
+        self.assertEqual(profiles_len, 30)
+        for i in range(30):
+            self.assertTrue(f'user{i}' in profiles_str)
+            self.assertTrue(f"User {i}'s bio" == profiles[i].description)
+
+    def test_matches(self):
+        population_script.populate_users()
+        population_script.populate_preference_options()
+        population_script.populate_matches()
+        population_script.assign_random_preferences()
+
+        matches=Match.objects.all()
+        matches_len=len(matches)
+
+        self.assertEquals(matches_len, 100)

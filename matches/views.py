@@ -25,7 +25,7 @@ def matches_possible(request):
     user_profile = get_object_or_404(UserProfile, user=request.user)
 
     possible_profiles = []
-    for match in Match.objects.filter(Q(user1=user_profile.user, user1_status='pending') | Q(user2=user_profile.user, user2_status='pending')):
+    for match in Match.objects.filter(Q(user1=user_profile.user, user1_status='pending') | Q(user2=user_profile.user, user2_status='pending')).exclude():
         if match.user1==request.user:
             possible_profiles.append(match.user2)
         else:
