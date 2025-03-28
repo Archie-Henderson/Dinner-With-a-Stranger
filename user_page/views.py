@@ -26,21 +26,17 @@ def profile_home(request):
 
 @login_required
 def edit_profile(request):
-    if request.method=='POST':
-        find_new_matches(request)
-        redirect(reverse('user_page:user_profile'))
-        
-    profile = get_object_or_404(UserProfile, user=request.user)
 
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
     if request.method == 'POST':
-        form = EditProfileForm(request.POST, request.FILES, instance=profile)
+        form = EditProfileForm(request.POST, request.FILES, instance=profile)  
         if form.is_valid():
             form.save()
-            messages.success(request, "Your profile has been updated successfully.")
-            return redirect('profile_home')  
+            return redirect('user_page:profile_home')
     else:
-        form = EditProfileForm(instance=profile)
-
+        form = EditProfileForm(instance=profile)  
+    
     return render(request, 'user_page/user_profile_edit.html', {'form': form})
 
 def registration_preferences(request):
