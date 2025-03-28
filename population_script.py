@@ -26,77 +26,62 @@ def assign_random_preferences(profile):
     profile.save()
 
 def populate_users():
-    users_data = [
-        {
-            'username': f'user{i}',
-            'email': f'user{i}@example.com',
-            'age': random.randint(18, 35),
-            'description': f"User {i}'s bio",
-            'phone_number': f'0123456789{i}',
-        }
-        for i in range(30)
-    ]
+    # List of fake users to add
+    users_data = [{'username': f'user{i}', 'email': f'user{i}@example.com', 'age': random.randint(18, 35), 'description': f"User {i}'s bio", 'phone_number': f'0123456789{i}'}for i in range(30)]
 
-    users = []
-    for data in users_data:
-        user, created = User.objects.get_or_create(
-            username=data['username'],
-            email=data['email'],
-            defaults={'password': make_password('password123')}
-        )
+    # Add users to the database
+    for user_data in users_data:
+        print(user_data['username'], user_data['email'])
+        user, created = User.objects.get_or_create(username=user_data['username'], email=user_data['email'])
         if created:
-            profile = UserProfile.objects.create(
-                user=user,
-                age=data['age'],
-                description=data['description'],
-                phone_number=data['phone_number']
-            )
-            assign_random_preferences(profile)
+            # Create a UserProfile for each user
+            UserProfile.objects.create(user=user, age=user_data['age'], description=user_data['description'], phone_number=user_data['phone_number'],)
             print(f"Created user: {user.username}")
         else:
-            print(f"ℹUser already exists: {user.username}")
-        users.append(user)
-
-    return users
+            print(f"User already exists: {user.username}")
+    
+    return User.objects.all()
 
 def populate_matches(users):
-    for user1 in users:
-        # Random number of matches per user
-        number_of_matches = random.randint(0, 10)
+    created_pairs = set()
 
-        # Choose random other users to match with (excluding themselves)
-        potential_users = [u for u in users if u != user1]
-        matched_users = random.sample(potential_users, min(number_of_matches, len(potential_users)))
+    for user in users:
+        # Decide how many matches to create for this user
+        num_matches = random.randint(3, 10)
+        other_users = random.sample([u for u in users if u != user], k=min(num_matches, len(users) - 1))
 
-        for user2 in matched_users:
-            # Prevent duplicate match (user1-user2 and user2-user1)
-            if Match.objects.filter(
-                (Q(user1=user1) & Q(user2=user2)) | (Q(user1=user2) & Q(user2=user1))
-            ).exists():
+        for other_user in other_users:
+            # Prevent duplicates (A-B and B-A)
+            pair = tuple(sorted([user.id, other_user.id]))
+            if pair in created_pairs:
                 continue
+            created_pairs.add(pair)
 
-            match_id = generate_random_match_id()
+            match_id = get_random_string(30).upper()
 
-            # Status assignment logic
-            user1_status = random.choice(['pending', 'accepted', 'declined'])
-            user2_status = random.choice(['pending', 'accepted'])
-
-            if user1_status == 'declined' or user2_status == 'declined':
-                user1_status = 'declined'
-                user2_status = 'declined'
-            elif user1_status == 'accepted' or user2_status == 'accepted':
+            roll = random.random()
+            if roll < 0.15:
                 user1_status = 'accepted'
                 user2_status = 'accepted'
+            elif roll < 0.75:
+                if random.choice([True, False]):
+                    user1_status = 'accepted'
+                    user2_status = 'pending'
+                else:
+                    user1_status = 'pending'
+                    user2_status = 'accepted'
+            else:
+                user1_status = 'declined'
+                user2_status = 'declined'
 
             Match.objects.create(
                 match_id=match_id,
-                user1=user1,
-                user2=user2,
+                user1=user,
+                user2=other_user,
                 user1_status=user1_status,
                 user2_status=user2_status,
             )
-
-            print(f"Created match: {user1.username} ({user1_status}) & {user2.username} ({user2_status}), ID: {match_id}")
+            print(f"Created match: {user.username} ({user1_status}) & {other_user.username} ({user2_status}), ID: {match_id}")
 
 
 def populate_preference_options():
