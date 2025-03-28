@@ -1,10 +1,16 @@
 import os
 import importlib
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.test import TestCase
 from django.conf import settings
 from django.test.client import Client
+from django.forms import fields as django_fields
+
 from django.contrib.auth.models import User
+from user_page.models import UserProfile
+
+import population_script
+
 
 FAILURE_HEADER = f"{os.linesep}{os.linesep}{os.linesep}================{os.linesep}TwD TEST FAILURE =({os.linesep}================{os.linesep}"
 FAILURE_FOOTER = f"{os.linesep}"
@@ -45,18 +51,75 @@ class PageSetupTests(TestCase):
                         index_mapping_exists = True
                         break
         
+            if page=='profile':
+                self.assertEquals(reverse(f'user_page:{page}'), f'/{values[0]}', f"{FAILURE_HEADER}The {page} URL lookup failed. Check matches' urls.py module.{FAILURE_FOOTER}")
             if page == 'view_profile':
                 args=['10']
 
-                self.assertEquals(reverse(f'matches:{page}', args=args), f'/matches/{values[0]}', f"{FAILURE_HEADER}The {page} URL lookup failed. Check matches' urls.py module.{FAILURE_FOOTER}")
+                self.assertEquals(reverse(f'user_page:{page}', args=args), f'/user_page/{values[0]}', f"{FAILURE_HEADER}The {page} URL lookup failed. Check matches' urls.py module.{FAILURE_FOOTER}")
             else:
-                self.assertEquals(reverse(f'matches:{page}'), f'/matches/{values[0]}', f"{FAILURE_HEADER}The {page} URL lookup failed. Check matches' urls.py module.{FAILURE_FOOTER}")
+                self.assertEquals(reverse(f'user_page:{page}'), f'/user_page/{values[0]}', f"{FAILURE_HEADER}The {page} URL lookup failed. Check matches' urls.py module.{FAILURE_FOOTER}")
 
             self.assertTrue(index_mapping_exists, f"{FAILURE_HEADER}The {page} URL mapping could not be found. Check matches' urls.py module.{FAILURE_FOOTER}")
             
     def test_response(self):        
         for (page, values) in self.pages.items():
 
-            response = self.client.get(reverse(f'matches:{page}'))
+            response = self.client.get(reverse(f'user_page:{page}'))
 
             self.assertEqual(response.status_code, 200, f"{FAILURE_HEADER}Requesting the {page} page failed. Check your URLs and view.{FAILURE_FOOTER}")
+
+class ViewTests(TestCase):
+    def setUp(self):
+        user=User.objects.create(username='test_user')
+        user.set_password('password123')
+        user.save()
+        self.client.login(username='test_user', password='password123')
+
+        population_script.populate_users
+        population_script.populate_preference_options
+        population_script.populate_matches
+        population_script.assign_random_preferences
+
+    def test_user_profile_template_used(self):
+        self.response = self.client.get(reverse_lazy('profile_home'))
+        self.content = self.response.content.decode()
+
+        self.assertTemplateUsed(self.response, 'user_page/user_profile.html')
+
+    def test_user_profile_edit_template_used(self):
+        self.response = self.client.get(reverse('user_page:edit_profile'))
+        self.content = self.response.content.decode()
+
+        self.assertTemplateUsed(self.response, 'user_page/user_profile_edit.html')
+
+class EditProfileFormTests(TestCase):
+    def test_edit_profile_form(self):
+        import user_page.forms
+        self.assertTrue('EditProfileForm' in dir(user_page.forms))
+
+        from user_page.forms import EditProfileForm
+        edit_profile_form=EditProfileForm()
+
+        self.assertEqual(type(edit_profile_form.__dict__['instance']), UserProfile)
+
+        fields = edit_profile_form.fields
+
+        expected_fields = {
+            'description': django_fields.CharField,
+            'email': django_fields.EmailField,
+            'picture': django_fields.ImageField,
+            'phone_number': django_fields.CharField,
+            'age': django_fields.IntegerField,
+            'regional_cuisines': django_fields.MultipleChoiceField,
+            'dining_vibes': django_fields.MultipleChoiceField,
+            'budgets': django_fields.MultipleChoiceField,
+            'age_ranges': django_fields.MultipleChoiceField,
+            'dietary_needs': django_fields.MultipleChoiceField
+        }
+
+        for expected_field_name in expected_fields:
+            expected_field = expected_fields[expected_field_name]
+
+            self.assertTrue(expected_field_name in fields.keys(), f"{FAILURE_HEADER}The field '{expected_field_name}' was not found in your CategoryForm implementation. Check you have all required fields, and try again.{FAILURE_FOOTER}")
+            self.assertEqual(expected_field, type(fields[expected_field_name]), f"{FAILURE_HEADER}The field '{expected_field_name}' in CategoryForm was not of the expected type '{type(fields[expected_field_name])}'.{FAILURE_FOOTER}")
