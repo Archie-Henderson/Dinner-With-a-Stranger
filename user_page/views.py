@@ -4,7 +4,6 @@ from django.contrib import messages
 from django.urls import reverse
 
 from django.contrib.auth.views import PasswordChangeView
-from matches.views import find_new_matches
 
 from django.contrib.auth.models import User  
 from matches.models import Match

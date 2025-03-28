@@ -1,6 +1,6 @@
 from django.urls import path
 from matches import views
-from .views import total_matches, user_match_counts
+from .views import total_matches
 
 app_name = 'matches'
 
