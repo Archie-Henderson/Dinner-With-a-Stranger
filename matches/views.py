@@ -241,13 +241,24 @@ def total_matches(request):
 @login_required
 def user_match_counts(request):
     user = request.user
+    user_profile = get_object_or_404(UserProfile, user=user)
 
-    possible_count = Match.objects.filter(
-        (Q(user1=user) | Q(user2=user)),
-        Q(user1_status='pending') | Q(user2_status='pending')
-    ).exclude(
-        Q(user1_status='declined') | Q(user2_status='declined')
-    ).count()
+    # Possible matches calculation
+    excluded_users = Match.objects.filter(
+        Q(user1=user) | Q(user2=user)
+    ).values_list('user1', 'user2')
+
+    flat_excluded_ids = set()
+    for u1, u2 in excluded_users:
+        flat_excluded_ids.update([u1, u2])
+    flat_excluded_ids.discard(user.id)
+
+    possible_profiles = []
+    for other_profile in UserProfile.objects.exclude(user=user).exclude(user__id__in=flat_excluded_ids):
+        if check_age_range(user_profile, other_profile) and check_cuisines_vibes(user_profile, other_profile):
+            possible_profiles.append(other_profile.user)
+
+    possible_count = len(possible_profiles)
 
     accepted_count = Match.objects.filter(
         (Q(user1=user) | Q(user2=user)),
@@ -271,9 +282,6 @@ def user_match_counts(request):
         'pending': pending_count,
         'denied': denied_count
     })
-
-
-
 
 def toggle_theme(request):
     """
