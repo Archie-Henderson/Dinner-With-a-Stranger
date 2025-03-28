@@ -43,7 +43,7 @@ def edit_profile(request):
 
     return render(request, 'user_page/user_profile_edit.html', {'form': form})
 
-@login_required
+# @login_required
 def registration_preferences(request):
     # Get or create user profile
     profile, created = UserProfile.objects.get_or_create(user=request.user)

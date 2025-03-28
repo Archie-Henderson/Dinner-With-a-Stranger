@@ -26,7 +26,7 @@
             <h3>Nice to meet you Stranger!</h3>
             <p>Tell us about yourself...</p>
 
-            <form method="post" action="{% url 'matches:matches_possible' %}">
+            <form method="post" action=".">
                 {% csrf_token %}
 
                 <!-- Username Field -->
@@ -170,7 +170,6 @@
                         <input type="checkbox" name="age_range" value="27+"> 27+
                     </label>
                 </div>
-    
 
                     <!-- Submit Button -->
                 <div class="form-actions">

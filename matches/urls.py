@@ -17,7 +17,7 @@ urlpatterns = [
     path('possible/accept/<int:user_id>/', views.possible_match_accept, name='possible_match_accept'),
     path('possible/deny/<int:user_id>/', views.possible_match_deny, name='possible_match_deny'),
 
-    # path('registration/preferences/', views.registration_preferences, name='registration_preferences'),
+    #path('registration/preferences/', views.registration_preferences, name='registration_preferences'),
 
 
 ]
