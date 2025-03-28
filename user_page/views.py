@@ -43,8 +43,6 @@ def registration_preferences(request):
         form = EditProfileForm(request.POST, request.FILES)
         if form.is_valid():
             user=User.objects.get(username=request.user.username)
-            user.email=form['email']
-            user.save()
 
             description=form['description']
             age=form['age']
