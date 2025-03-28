@@ -52,7 +52,12 @@ def matches_pending(request):
         (Q(user1=request.user) & Q(user1_status='pending') & Q(user2_status='accepted')) |
         (Q(user2=request.user) & Q(user2_status='pending') & Q(user1_status='accepted'))
     )
-    return render(request, 'matches/matches_pending.html', {'matches': matches})
+
+    matches_with_others = [(match, match.get_other_user(request.user)) for match in matches]
+
+    return render(request, 'matches/matches_pending.html', {
+        'matches_with_others': matches_with_others
+    })
 
 @login_required
 def ajax_matches_pending(request):
