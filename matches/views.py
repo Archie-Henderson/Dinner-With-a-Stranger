@@ -1,24 +1,18 @@
 from django.shortcuts import render, get_object_or_404,redirect
 from django.http import HttpResponse, JsonResponse
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
 from matches.models import Match
 from user_page.models import UserProfile
+from django.contrib.auth.models import User 
 from django.db.models import Q
 
 from django.contrib import messages
-from django.contrib.auth import logout
 
 from django.views.decorators.http import require_POST
 
 from django.utils.crypto import get_random_string
-
-from matches.helpers import check_matched, check_age_range, check_cuisines
-
-def staff_required(login_url=None):
-    return user_passes_test(lambda u: u.is_staff, login_url=login_url)
 
 def index(request):
     if not request.user.is_authenticated and 'logged_out' not in request.session:
@@ -31,10 +25,11 @@ def matches_possible(request):
     user_profile = get_object_or_404(UserProfile, user=request.user)
 
     possible_profiles = []
-    for other_profile in UserProfile.objects.exclude(user=request.user):
-        if check_matched(user_profile, other_profile):
-            if check_age_range(user_profile, other_profile) and check_cuisines(user_profile, other_profile):
-                possible_profiles.append(other_profile)
+    for match in Match.objects.filter(Q(user1=user_profile.user, user1_status='pending') | Q(user2=user_profile.user, user2_status='pending')):
+        if match.user1==request.user:
+            possible_profiles.append(match.user2)
+        else:
+            possible_profiles.append(match.user2)
 
     return render(request, 'matches/matches_possible.html', {'possible_users': possible_profiles})
 
@@ -250,19 +245,3 @@ def toggle_theme(request):
         return response
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
-
-@login_required
-def registration_preferences(request):
-    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-
-    if request.method == "POST":
-         form = UserPreferencesForm(request.POST, instance=user_profile)
-         if form.is_valid():
-             form.save()
-             return redirect('matches_possible')  
-         form = UserPreferencesForm(instance=user_profile)
-
-    
-    else:
-         form = UserPreferencesForm(instance=user_profile) 
-    return render(request, 'registration_preferences.html', {'form': form})

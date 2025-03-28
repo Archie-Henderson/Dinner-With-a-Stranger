@@ -14,10 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from django.urls import include
+from django.urls import path, include, reverse_lazy 
 from matches import views as match_views
 from user_page import views as user_page_views
+
+from django.views.generic.edit import CreateView
+from django.contrib.auth.forms import UserCreationForm
 
 
 urlpatterns = [
@@ -25,6 +27,11 @@ urlpatterns = [
     path('matches/', include('matches.urls')),
     path('profile/', include('user_page.urls')), 
     path('admin/', admin.site.urls),
+    path('accounts/register/', CreateView.as_view(
+        template_name='registration/registration_form.html',
+        form_class=UserCreationForm,
+        success_url=reverse_lazy('matches_possible')
+        ), name='register'),
     path('accounts/', include('registration.backends.simple.urls')),
     path('toggle_theme/', match_views.toggle_theme, name='toggle_theme'),
     path('preferences/', user_page_views.registration_preferences, name='registration_preferences'),

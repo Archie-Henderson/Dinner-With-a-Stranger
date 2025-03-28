@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
+from matches.helpers import find_new_matches
 
 from django.contrib.auth.views import PasswordChangeView
 
@@ -10,7 +11,7 @@ from matches.models import Match
 from user_page.models import UserProfile
 from django.db.models import Q
 
-from .forms import EditProfileForm
+from user_page.forms import EditProfileForm
 
 @login_required
 def profile_home(request):
@@ -48,12 +49,12 @@ def registration_preferences(request):
     profile, created = UserProfile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
-        form = UserPreferencesForm(request.POST, request.FILES, instance=profile)
+        form = EditProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-            return redirect('matches:matches_possible')  # Redirect to matches page after preferences
+            return redirect(reverse('matches:matches_possible'))  # Redirect to matches page after preferences
     else:
-        form = UserPreferencesForm(instance=profile)
+        form = EditProfileForm(instance=profile)
 
     return render(request, 'registration/preferences.html', {
         'form': form,

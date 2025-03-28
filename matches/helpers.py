@@ -1,4 +1,5 @@
 from matches.models import Match
+from user_page.models import UserProfile
 from django.db.models import Q
 
 def check_matched(user_profile, other_profile):
@@ -27,3 +28,11 @@ def check_cuisines(user, other_user):
     user_cuisines = set(user.regional_cuisines.values_list('name', flat=True))
     other_cuisines = set(other_user.regional_cuisines.values_list('name', flat=True))
     return bool(user_cuisines & other_cuisines)
+
+def find_new_matches(request):
+    matches=[]
+    for other_user in UserProfile.objects.exclude(user=request.user):
+        if check_age_range(request.user, other_user) and not check_matched(request.user, other_user) and check_cuisines(request.user, other_user):
+            matches.append(Match.objects.create(user1=request.user, user2=other_user))
+
+    return matches
