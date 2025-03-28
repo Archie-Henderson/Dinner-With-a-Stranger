@@ -1,7 +1,3 @@
-// $(document).ready(function() {
-//     alert('Hello, world!');
-//     });
-    
 //shows match count on the index page
 $(document).ready(function () {
     $.ajax({
@@ -16,10 +12,8 @@ $(document).ready(function () {
             console.error("Failed to load match count.");
         }
     });
-});
 
-//shows possible, accepted, and pending match counts on the user profile page
-$(document).ready(function () {
+    //shows possible, accepted, and pending match counts on the user profile page
     $.ajax({
         url: "{% url 'user-match-counts' %}",  
         method: "GET",
