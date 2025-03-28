@@ -4,7 +4,7 @@
     </div>
     <div class="match-info">
         <h2>{{ other_user.username }}</h2>
-        <p>{{ other_user.userprofile.description|default:'No bio yet!' }}</p>
+        <p>{{ other_user.profile.description|default:"No bio yet! :(" }}</p>
         {% if action_url and action_label %}
             <a href="{{ action_url }}" class="match-btn {% if action_class %}{{ action_class }}{% endif %}">{{ action_label }}</a>
         {% endif %}
