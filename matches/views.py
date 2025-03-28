@@ -15,50 +15,10 @@ from django.views.decorators.http import require_POST
 
 from django.utils.crypto import get_random_string
 
+from matches.helpers import check_matched, check_age_range, check_cuisines
+
 def staff_required(login_url=None):
     return user_passes_test(lambda u: u.is_staff, login_url=login_url)
-
-##### checks for matches_possible 
-def __check_matched(user_profile, other_profile):
-    return not Match.objects.filter(
-        Q(user1=user_profile.user, user2=other_profile.user) | 
-        Q(user1=other_profile.user, user2=user_profile.user)
-    ).exists()
-
-def __check_age_range(profile1, profile2):
-    user_ranges = set(profile1.age_ranges.values_list('label', flat=True))
-    other_ranges = set(profile2.age_ranges.values_list('label', flat=True))
-
-    def in_range(age, ranges):
-        for r in ranges:
-            if r == '27+' and age >= 27:
-                return True
-            parts = r.split('-')
-            if len(parts) == 2 and parts[0].isdigit() and parts[1].isdigit():
-                if int(parts[0]) <= age <= int(parts[1]):
-                    return True
-        return False
-
-    return in_range(profile1.age, other_ranges) and in_range(profile2.age, user_ranges)
-
-def __check_cuisines(user, other_user):
-    user_cuisines = set(user.regional_cuisines.values_list('name', flat=True))
-    other_cuisines = set(other_user.regional_cuisines.values_list('name', flat=True))
-    return bool(user_cuisines & other_cuisines)
-
-def find_new_matches(request):
-    user_profile = get_object_or_404(UserProfile, user=request.user)
-
-    new_matches = 0
-
-    for other_profile in UserProfile.objects.exclude(user=request.user):
-        if __check_matched(user_profile, other_profile) and __check_age_range(user_profile, other_profile) and __check_cuisines(user_profile, other_profile):
-            Match.objects.create(user1=user_profile.user, user2=other_profile.user)
-            new_matches += 1
-            if new_matches > 50:
-                return
-#####
-
 
 def index(request):
     if not request.user.is_authenticated and 'logged_out' not in request.session:
@@ -66,27 +26,14 @@ def index(request):
         request.session['logged_out'] = True  # Mark the session to ensure the message appears once
     return render(request, 'matches/index.html')
 
-
-def get_possible_profiles(user_profile):
-    possible_profiles = []
-
-    for other_profile in UserProfile.objects.exclude(user=user_profile.user):
-        if __check_matched(user_profile, other_profile) and __check_age_range(user_profile, other_profile) and __check_cuisines(user_profile, other_profile):
-            possible_profiles.append(other_profile)
-
-    return possible_profiles
-
 @login_required
 def matches_possible(request):
     user_profile = get_object_or_404(UserProfile, user=request.user)
 
-    # Find users who have not interacted with current user
     possible_profiles = []
     for other_profile in UserProfile.objects.exclude(user=request.user):
-        # 1. No match exists yet
-        if __check_matched(user_profile, other_profile):
-            # 2. Preferences compatible
-            if __check_age_range(user_profile, other_profile) and __check_cuisines(user_profile, other_profile):
+        if check_matched(user_profile, other_profile):
+            if check_age_range(user_profile, other_profile) and check_cuisines(user_profile, other_profile):
                 possible_profiles.append(other_profile)
 
     return render(request, 'matches/matches_possible.html', {'possible_users': possible_profiles})
@@ -109,7 +56,6 @@ def ajax_matches_pending(request):
     ).values()  
     return JsonResponse({'matches': list(matches)})
 
-
 @login_required
 def matches_accepted(request):
     # Fetch the accepted matches after the status change
@@ -123,7 +69,6 @@ def matches_accepted(request):
     return render(request, 'matches/matches_accepted.html', {
         'matches_with_others': matches_with_others
     })
-
 
 @login_required
 def matches_denied(request):
