@@ -5,9 +5,7 @@ html, body {
     flex-direction: column;
 }
 
-.container.flex-grow-1 {
-    flex: 1;
-}
+
 
 footer {
     background-color: #f8f9fa;

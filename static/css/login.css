@@ -1,56 +1,55 @@
-/* Base Styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #e7c13a; /* Yellow background for the page */
+    background-color: #e7c13a; 
     margin: 0;
     padding: 0;
 }
 
 .navbar {
-    background-color: #F8B400; /* Yellow background for navbar */
-    color: black; /* Set navbar text color to black */
-    font-size: 1.5rem; /* Adjust font size for navbar */
+    background-color: #F8B400; 
+    color: black; 
+    font-size: 1.5rem; 
 }
 
-/* Hero Section Styles */
+
 .hero-container {
-    background-color: white; /* White background for the hero section */
-    color: black; /* Black text color */
-    padding: 60px 0; /* More space at the top */
+    background-color: white;
+    color: black; 
+    padding: 60px 0; 
     text-align: center;
 }
 
 .hero-container h1 {
-    font-size: 1.8rem; /* Smaller text for the hero section */
+    font-size: 1.8rem; 
     font-weight: bold;
     margin: 0;
 }
 
 .hero-container h2 {
-    font-size: 1.2rem; /* Smaller text for the description */
+    font-size: 1.2rem; 
     margin: 10px 0;
 }
 
-/* Login Form Container */
+
 .login-container {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 40px 0;
-    min-height: 70vh; /* Ensure the form is centered vertically */
+    min-height: 70vh; 
 }
 
-/* Login Box */
+
 .login-box {
-    background-color: rgb(238, 219, 151); /* Light yellow background */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
+    background-color: rgb(238, 219, 151); 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
     padding: 40px;
     width: 400px;
     border-radius: 10px;
     text-align: center;
 }
 
-/* Login/Signup Button Styles */
+
 .login-buttons {
     display: flex;
     justify-content: space-between;
@@ -58,26 +57,26 @@ body {
 }
 
 .btn {
-    background-color: #F8B400; /* Yellow background for buttons */
+    background-color: #F8B400; 
     border: none;
-    padding: 12px 24px; /* Increase padding for larger buttons */
-    color: black; /* Text color */
+    padding: 12px 24px; 
+    color: black; 
     font-size: 16px;
     cursor: pointer;
     border-radius: 5px;
-    width: 48%; /* Make buttons side by side */
+    width: 48%; 
     transition: background-color 0.3s;
 }
 
 .btn:hover {
-    background-color: #e09000; /* Darker shade on hover */
+    background-color: #e09000; 
 }
 
 .btn.active {
     background-color: #b97f00;
 }
 
-/* Form Fields */
+
 .form-field {
     margin-bottom: 20px;
     text-align: left;
@@ -101,17 +100,17 @@ body {
 }
 
 .form-control:focus {
-    border-color: #F8B400; /* Highlight color on focus */
+    border-color: #F8B400; 
     outline: none;
 }
 
-/* Form Actions */
+
 .form-actions {
     margin-top: 20px;
 }
 
 .btn-submit {
-    background-color: #F8B400; /* Yellow background */
+    background-color: #F8B400; 
     border: none;
     padding: 14px 24px;
     color: white;
@@ -123,17 +122,17 @@ body {
 }
 
 .btn-submit:hover {
-    background-color: #e09000; /* Darker shade for hover */
+    background-color: #e09000; 
 }
 
-/* Forgot Password */
+
 .forgot-password {
     margin-top: 15px;
     font-size: 14px;
 }
 
 .forgot-password a {
-    color: #007bff; /* Blue color for the link */
+    color: #007bff; 
     text-decoration: none;
 }
 
@@ -141,7 +140,7 @@ body {
     text-decoration: underline;
 }
 
-/* Welcome Section */
+
 .login-welcome-back h3 {
     font-size: 24px;
     color: #333;
@@ -149,7 +148,7 @@ body {
     text-align: center;
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
     .hero-container h1 {
         font-size: 2.5rem;
@@ -165,7 +164,7 @@ body {
     }
 
     .btn {
-        font-size: 14px; /* Smaller font for smaller screens */
+        font-size: 14px; 
     }
 
     .form-control {
