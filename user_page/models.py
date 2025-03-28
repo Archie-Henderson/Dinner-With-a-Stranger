@@ -29,7 +29,7 @@ class AgeRange(models.Model):
         return self.label
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     website = models.URLField(blank=True)
     picture = models.ImageField(upload_to='profile_images', blank=True)
     description = models.CharField(max_length=200, blank=True, default="No bio yet:(")
@@ -41,8 +41,7 @@ class UserProfile(models.Model):
     dining_vibes = models.ManyToManyField(DiningVibe)
     dietary_needs = models.ManyToManyField(DietaryNeed)
     budgets = models.ManyToManyField(Budget)
-    age_ranges = models.ManyToManyField(AgeRange
-                                        )
+    age_ranges = models.ManyToManyField(AgeRange)
 
     def __str__(self):
         return self.user.username

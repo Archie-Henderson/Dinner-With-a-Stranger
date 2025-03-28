@@ -29,7 +29,7 @@ def matches_possible(request):
         if match.user1==request.user:
             possible_profiles.append(match.user2)
         else:
-            possible_profiles.append(match.user2)
+            possible_profiles.append(match.user1)
 
     return render(request, 'matches/matches_possible.html', {'possible_users': possible_profiles})
 

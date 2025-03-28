@@ -32,12 +32,13 @@
 
                     <h5>Meal Preferences</h5>
                     <div class="meal-preferences">
-                        <p><strong>Regional Cuisines / Dining Vibes</strong></p>
+                        <p><strong>Regional Cuisines</strong></p>
                         <div class="tags">
                             {% for cuisine in user.profile.regional_cuisines.all %}
                                 <span class="badge bg-warning">{{ cuisine }}</span>
                             {% endfor %}
                         </div>
+                        <p><strong>Dining Vibes</strong></p>
                         <div class="tags">
                             {% for vibe in user.profile.dining_vibes.all %}
                                 <span class="badge bg-warning">{{ vibe }}</span>
@@ -46,14 +47,18 @@
 
                         <p><strong>Budget</strong></p>
                         <div class="tags">
-                            {% for budget in user.profile.budget %}
+                            {% for budget in user.profile.budgets.all %}
                                 <span class="badge bg-warning">{{ budget }}</span>
                             {% endfor %}
                         </div>
 
                         <p><strong>Age Range</strong></p>
-                        <span>{{ user.profile.age_range }}</span>
-
+                        <div class="tags">
+                            {% for age_range in user.profile.age_ranges.all %}
+                                <span class="badge bg-warning">{{ age_range }}</span>
+                            {% endfor %}
+                        </div>
+                        
                         <p><strong>Dietary Needs</strong></p>
                         <div class="tags">
                             {% for need in user.profile.dietary_needs.all %}

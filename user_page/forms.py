@@ -7,6 +7,8 @@ class EditProfileForm(forms.ModelForm):
         required=False
     )
 
+    email = forms.EmailField(required=True)
+
     picture = forms.ImageField(required=False)
 
     phone_number = forms.CharField(
