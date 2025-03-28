@@ -245,3 +245,22 @@ def toggle_theme(request):
         return response
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@login_required
+def ajax_matches_accepted(request):
+    # Filter accepted matches for the current user.
+    matches = Match.objects.filter(
+        (Q(user1=request.user) & Q(user1_status='accepted')) |
+        (Q(user2=request.user) & Q(user2_status='accepted'))
+    ).values()
+    return JsonResponse({'matches': list(matches)})
+
+
+@login_required
+def ajax_matches_denied(request):
+    # Filter denied (declined) matches for the current user.
+    matches = Match.objects.filter(
+        (Q(user1=request.user) & Q(user1_status='declined')) |
+        (Q(user2=request.user) & Q(user2_status='declined'))
+    ).values()
+    return JsonResponse({'matches': list(matches)})
