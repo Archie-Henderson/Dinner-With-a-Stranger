@@ -21,6 +21,8 @@ from user_page import views as user_page_views
 from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
 
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', match_views.index, name='index'),
@@ -36,5 +38,5 @@ urlpatterns = [
     path('toggle_theme/', match_views.toggle_theme, name='toggle_theme'),
     path('preferences/', user_page_views.registration_preferences, name='registration_preferences'),
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
