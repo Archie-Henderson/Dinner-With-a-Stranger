@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from django.urls import reverse_lazy 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -97,6 +98,7 @@ REGISTRATION_AUTO_LOGIN = True
 
 # The URL that Django redirects users to after logging in.
 LOGIN_REDIRECT_URL = 'matches:matches_possible'
+SIMPLE_BACKEND_REDIRECT_URL = 'matches:matches_possible'
 LOGOUT_REDIRECT_URL = 'index'
 
 # The page users are directed to if they are not logged in.
