@@ -1,13 +1,16 @@
 {% extends 'base.html' %}
 
+{% load static %}  <!-- Add this line to load the static files -->
+
 {% block title %}
     Login
 {% endblock %}
 
-{% block content %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
 
-    <!-- Link to specific CSS file for login page -->
-    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% block content %}
     <!-- Hero Section with Description -->
     <div class="hero-container">
         <h1>Great meals, even better company.</h1>
@@ -29,7 +32,7 @@
 
             <div class="login-welcome-back">
                 <h3>Welcome back Stranger!</h3>
-            <div>
+            </div>
 
             <form method="post" action=".">
                 {% csrf_token %}
