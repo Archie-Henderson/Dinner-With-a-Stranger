@@ -46,6 +46,7 @@ def matches_possible(request):
 
     return render(request, 'matches/matches_possible.html', {'possible_users': possible_profiles})
 
+
 @login_required
 def matches_pending(request):
     matches = Match.objects.filter(
