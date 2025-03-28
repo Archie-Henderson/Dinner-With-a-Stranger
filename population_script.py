@@ -1,5 +1,6 @@
 import random
 import os
+from django.db.models import Q
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dinner_with_a_stranger.settings')
 
 import django
@@ -14,7 +15,7 @@ from django.utils.crypto import get_random_string
 from django.contrib.auth.hashers import make_password
 
 def generate_random_match_id():
-    return get_random_string(length=10).upper()
+    return get_random_string(length=30).upper()
 
 def assign_random_preferences(profile):
     profile.regional_cuisines.set(random.sample(list(Cuisine.objects.all()), k=min(2, Cuisine.objects.count())))
@@ -33,7 +34,7 @@ def populate_users():
             'description': f"User {i}'s bio",
             'phone_number': f'0123456789{i}',
         }
-        for i in range(10)
+        for i in range(30)
     ]
 
     users = []
@@ -59,19 +60,44 @@ def populate_users():
     return users
 
 def populate_matches(users):
-    for i in range(len(users) - 1):
-        user1 = users[i]
-        user2 = users[i + 1]
-        match_id = generate_random_match_id()
+    for user1 in users:
+        # Random number of matches per user
+        number_of_matches = random.randint(0, 10)
 
-        match = Match.objects.create(
-            match_id=match_id,
-            user1=user1,
-            user2=user2,
-            user1_status=random.choice(['pending', 'accepted', 'declined']),
-            user2_status=random.choice(['pending', 'accepted', 'declined']),
-        )
-        print(f"Created match: {user1.username} & {user2.username}, ID: {match_id}")
+        # Choose random other users to match with (excluding themselves)
+        potential_users = [u for u in users if u != user1]
+        matched_users = random.sample(potential_users, min(number_of_matches, len(potential_users)))
+
+        for user2 in matched_users:
+            # Prevent duplicate match (user1-user2 and user2-user1)
+            if Match.objects.filter(
+                (Q(user1=user1) & Q(user2=user2)) | (Q(user1=user2) & Q(user2=user1))
+            ).exists():
+                continue
+
+            match_id = generate_random_match_id()
+
+            # Status assignment logic
+            user1_status = random.choice(['pending', 'accepted', 'declined'])
+            user2_status = random.choice(['pending', 'accepted'])
+
+            if user1_status == 'declined' or user2_status == 'declined':
+                user1_status = 'declined'
+                user2_status = 'declined'
+            elif user1_status == 'accepted' or user2_status == 'accepted':
+                user1_status = 'accepted'
+                user2_status = 'accepted'
+
+            Match.objects.create(
+                match_id=match_id,
+                user1=user1,
+                user2=user2,
+                user1_status=user1_status,
+                user2_status=user2_status,
+            )
+
+            print(f"Created match: {user1.username} ({user1_status}) & {user2.username} ({user2_status}), ID: {match_id}")
+
 
 def populate_preference_options():
     Cuisine.objects.bulk_create([

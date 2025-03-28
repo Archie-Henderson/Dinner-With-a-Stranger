@@ -17,7 +17,8 @@ def staff_required(login_url=None):
 
 def __check_matched(user_profile, other_profile):
     return not Match.objects.filter(
-        Q(user1=user_profile.user, user2=other_profile.user) | Q(user1=other_profile.user, user2=user_profile.user)
+        Q(user1=user_profile.user, user2=other_profile.user) | 
+        Q(user1=other_profile.user, user2=user_profile.user)
     ).exists()
 
 def __check_age_range(profile1, profile2):
@@ -44,17 +45,18 @@ def __check_cuisines(user, other_user):
 
 
 def find_new_matches(request):
-    user=request.user
-    user_profile=get_object_or_404(UserProfile, user=user)
+    user_profile = get_object_or_404(UserProfile, user=request.user)
 
-    new_matches=0
+    new_matches = 0
 
-    for other_user in UserProfile.objects.all():
-        if __check_matched(user_profile, other_user) and __check_age_range(user_profile, other_user) and __check_cuisines(user_profile, other_user):
-            Match.objects.create(user1=user, user2=other_user)
-            new_matches+=1
-            if new_matches>50:
+    for other_profile in UserProfile.objects.exclude(user=request.user):
+        if __check_matched(user_profile, other_profile) and __check_age_range(user_profile, other_profile) and __check_cuisines(user_profile, other_profile):
+            Match.objects.create(user1=user_profile.user, user2=other_profile.user)
+            new_matches += 1
+            if new_matches > 50:
                 return
+
+
 
 def index(request):
     if not request.user.is_authenticated and 'logged_out' not in request.session:
@@ -127,12 +129,6 @@ def matches_denied(request):
 def matches_base(request):
     return render(request, 'matches/matches_base.html')
 
-# Update match status for the current user (for AJAX or link buttons)
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from .models import Match
-
 @login_required
 def update_match_status(request, match_id, status):
     # Ensure the status is valid
@@ -144,8 +140,12 @@ def update_match_status(request, match_id, status):
     # Check if the current user is one of the match participants
     if request.user == match.user1:
         match.user1_status = status
+        if status == 'declined':
+            match.user2_status = 'declined'
     elif request.user == match.user2:
         match.user2_status = status
+        if status == 'declined':
+            match.user1_status = 'declined'
     else:
         return JsonResponse({'error': 'Unauthorized'}, status=403)
 
@@ -157,6 +157,7 @@ def update_match_status(request, match_id, status):
 
     # Reload the page (Do not redirect to another page)
     return redirect(request.META.get('HTTP_REFERER'))
+
 
 @login_required
 def match_action_confirm(request, match_id, action_type):
