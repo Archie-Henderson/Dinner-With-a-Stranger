@@ -315,3 +315,19 @@ def ajax_matches_denied(request):
         (Q(user2=request.user) & Q(user2_status='declined'))
     ).values()
     return JsonResponse({'matches': list(matches)})
+
+@login_required
+def view_user_profile(request, user_id):
+    other_user = get_object_or_404(User, id=user_id)
+
+    # Check if they are mutually accepted
+    match = Match.objects.filter(
+        (Q(user1=request.user, user2=other_user) | Q(user1=other_user, user2=request.user)),
+        user1_status='accepted',
+        user2_status='accepted'
+    ).first()
+
+    if not match:
+        return HttpResponse("You are not matched with this user.", status=403)
+
+    return render(request, 'user_page/other_user_profile.html', {'other_user': other_user})
