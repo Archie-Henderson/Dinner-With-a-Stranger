@@ -4,6 +4,7 @@ from django.urls import reverse, reverse_lazy
 from django.test import TestCase
 from django.conf import settings
 from django.test.client import Client
+from django.forms import fields as django_fields
 
 from django.contrib.auth.models import User
 from user_page.models import UserProfile
@@ -91,3 +92,34 @@ class ViewTests(TestCase):
         self.content = self.response.content.decode()
 
         self.assertTemplateUsed(self.response, 'user_page/user_profile_edit.html')
+
+class EditProfileFormTests(TestCase):
+    def test_edit_profile_form(self):
+        import user_page.forms
+        self.assertTrue('EditProfileForm' in dir(user_page.forms))
+
+        from user_page.forms import EditProfileForm
+        edit_profile_form=EditProfileForm()
+
+        self.assertEqual(type(edit_profile_form.__dict__['instance']), UserProfile)
+
+        fields = edit_profile_form.fields
+
+        expected_fields = {
+            'description': django_fields.CharField,
+            'email': django_fields.EmailField,
+            'picture': django_fields.ImageField,
+            'phone_number': django_fields.CharField,
+            'age': django_fields.IntegerField,
+            'regional_cuisines': django_fields.MultipleChoiceField,
+            'dining_vibes': django_fields.MultipleChoiceField,
+            'budgets': django_fields.MultipleChoiceField,
+            'age_ranges': django_fields.MultipleChoiceField,
+            'dietary_needs': django_fields.MultipleChoiceField
+        }
+
+        for expected_field_name in expected_fields:
+            expected_field = expected_fields[expected_field_name]
+
+            self.assertTrue(expected_field_name in fields.keys(), f"{FAILURE_HEADER}The field '{expected_field_name}' was not found in your CategoryForm implementation. Check you have all required fields, and try again.{FAILURE_FOOTER}")
+            self.assertEqual(expected_field, type(fields[expected_field_name]), f"{FAILURE_HEADER}The field '{expected_field_name}' in CategoryForm was not of the expected type '{type(fields[expected_field_name])}'.{FAILURE_FOOTER}")

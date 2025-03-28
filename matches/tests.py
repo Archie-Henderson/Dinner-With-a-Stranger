@@ -85,7 +85,7 @@ class PopulationScriptTest(TestCase):
         population_script.assign_random_preferences()
 
     def test_users(self):
-        users=User.objects.all()
+        users=User.objects.filter()
         users_len=len(users)
         users_strs=map(str,users)
 
@@ -94,7 +94,7 @@ class PopulationScriptTest(TestCase):
             self.assertTrue(f'user{i}' in users_strs)
         
     def test_user_profiles(self):        
-        profiles=UserProfile.objects.all()
+        profiles=UserProfile.objects.filter()
         profiles_len=len(profiles)
         profiles_str=map(str,profiles)
 
