@@ -51,10 +51,10 @@ def check_cuisines(user, other_user):
 def populate_users():
     users_data = [{'username': f'user{i}', 'email': f'user{i}@example.com', 'age': random.randint(18, 35), 'description': f"User {i}'s bio", 'phone_number': f'0123456789{i}'} for i in range(50)]
 
-    pictures_folder = 'media/profile_images/'
+    picture_folder = 'profile_images/' 
     picture_files = [f"user-pic-{i+1}.jpg" for i in range(50)]
 
-    created_users = []  # ← add this
+    created_users = []
 
     for user_data, picture_filename in zip(users_data, picture_files):
         user, created = User.objects.get_or_create(
@@ -69,17 +69,19 @@ def populate_users():
                 description=user_data['description'],
                 phone_number=user_data['phone_number'],
             )
-            picture_path = os.path.join(pictures_folder, picture_filename)
-            with open(picture_path, 'rb') as f:
-                profile.picture.save(os.path.basename(picture_path), File(f))
+            # Just point to existing file
+            profile.picture.name = picture_folder + picture_filename
+            profile.save()
             assign_random_preferences(profile)
             print(f"Created user: {user.username} with picture {picture_filename}")
         else:
             print(f"User already exists: {user.username}")
 
-        created_users.append(user)  # ← collect user
+        created_users.append(user)
 
-    return created_users  # ← return the list
+    return created_users
+
+
 
 
 def populate_matches(users):
