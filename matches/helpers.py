@@ -24,15 +24,22 @@ def check_age_range(profile1, profile2):
 
     return in_range(profile1.age, other_ranges) and in_range(profile2.age, user_ranges)
 
-def check_cuisines(user, other_user):
+def check_cuisines_vibes(user, other_user):
     user_cuisines = set(user.regional_cuisines.values_list('name', flat=True))
     other_cuisines = set(other_user.regional_cuisines.values_list('name', flat=True))
-    return bool(user_cuisines & other_cuisines)
 
-def find_new_matches(request):
-    matches=[]
-    for other_user in UserProfile.objects.exclude(user=request.user):
-        if check_age_range(request.user, other_user) and not check_matched(request.user, other_user) and check_cuisines(request.user, other_user):
-            matches.append(Match.objects.create(user1=request.user, user2=other_user))
+    user_vibes = set(user.dining_vibes.values_list('name', flat=True))
+    other_vibes = set(other_user.dining_vibes.values_list('name', flat=True))
 
-    return matches
+    cuisines_match = bool(user_cuisines & other_cuisines)
+    vibes_match = bool(user_vibes & other_vibes)
+
+    return cuisines_match or vibes_match
+
+#def find_new_matches(request):
+#    matches=[]
+#    for other_user in UserProfile.objects.exclude(user=request.user):
+#        if check_age_range(request.user, other_user) and not check_matched(request.user, other_user) and check_cuisines(request.user, other_user):
+#            matches.append(Match.objects.create(user1=request.user, user2=other_user))
+#
+#   return matches

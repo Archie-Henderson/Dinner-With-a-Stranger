@@ -14,22 +14,35 @@ from django.views.decorators.http import require_POST
 
 from django.utils.crypto import get_random_string
 
+from matches.helpers import check_matched, check_age_range, check_cuisines_vibes
+
 def index(request):
     if not request.user.is_authenticated and 'logged_out' not in request.session:
         messages.info(request, "You've logged out successfully!")
         request.session['logged_out'] = True  # Mark the session to ensure the message appears once
     return render(request, 'matches/index.html')
 
+
 @login_required
 def matches_possible(request):
     user_profile = get_object_or_404(UserProfile, user=request.user)
 
+    # Exclude users who are either matched or declined (i.e., in the match table)
+    excluded_users = Match.objects.filter(
+        Q(user1=request.user) | Q(user2=request.user)
+    ).exclude(
+        Q(user1_status='declined') | Q(user2_status='declined')
+    ).values_list('user1', 'user2')
+
+    flat_excluded_ids = set()
+    for u1, u2 in excluded_users:
+        flat_excluded_ids.update([u1, u2])
+    flat_excluded_ids.discard(request.user.id)
+
     possible_profiles = []
-    for match in Match.objects.filter(Q(user1=user_profile.user, user1_status='pending') | Q(user2=user_profile.user, user2_status='pending')):
-        if match.user1==request.user:
-            possible_profiles.append(match.user2)
-        else:
-            possible_profiles.append(match.user1)
+    for other_profile in UserProfile.objects.exclude(user=request.user).exclude(user__id__in=flat_excluded_ids):
+        if check_age_range(user_profile, other_profile) and check_cuisines_vibes(user_profile, other_profile):
+            possible_profiles.append(other_profile.user)
 
     return render(request, 'matches/matches_possible.html', {'possible_users': possible_profiles})
 

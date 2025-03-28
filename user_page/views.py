@@ -2,7 +2,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
-from matches.helpers import find_new_matches
 
 from django.contrib.auth.views import PasswordChangeView
 
