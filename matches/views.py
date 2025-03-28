@@ -90,7 +90,6 @@ def matches_denied(request):
         (Q(user2=request.user) & Q(user2_status='declined'))
     )
 
-    # Show only if YOU declined
     filtered = []
     for match in matches:
         if (match.user1 == request.user and match.user1_status == 'declined') or \
