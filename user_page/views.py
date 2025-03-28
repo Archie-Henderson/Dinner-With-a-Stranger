@@ -43,22 +43,35 @@ def edit_profile(request):
 
     return render(request, 'user_page/user_profile_edit.html', {'form': form})
 
-@login_required
 def registration_preferences(request):
-    # Get or create user profile
-    profile, created = UserProfile.objects.get_or_create(user=request.user)
-
     if request.method == 'POST':
-        form = EditProfileForm(request.POST, request.FILES, instance=profile)
+        form = EditProfileForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect(reverse('matches:matches_possible'))  # Redirect to matches page after preferences
-    else:
-        form = EditProfileForm(instance=profile)
+            user=User.objects.get(username=request.user.username)
+            user.email=form['email']
+            user.save()
 
-    return render(request, 'registration/preferences.html', {
+            description=form['description']
+            age=form['age']
+            picture=form['picture']
+            phone_number=form['phone_number']
+            regional_cuisines=form['regional_cuisines']
+            dining_vibes=form['dining_vibes']
+            budgets=form['budgets']
+            age_ranges=form['age_ranges']
+            dietary_needs=form['dietary_needs']
+            UserProfile.objects.create(user=user,description=description,age=age,picture=picture,phone_number=phone_number,
+                                       regional_cuisines=regional_cuisines,dining_vibes=dining_vibes,
+                                       budgets=budgets,age_ranges=age_ranges,dietary_needs=dietary_needs)
+            return redirect(reverse('matches:matches_possible'))  # Redirect to matches page after preferences
+        else:
+            redirect(reverse('user_page:profile_home'))
+    else:
+        form = EditProfileForm()
+
+    return render(request, 'registration/registration_preferences.html', {
         'form': form,
-        'is_new_user': created
+        'is_new_user': True
     })
 
 
