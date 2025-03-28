@@ -66,6 +66,68 @@ button.btn-primary {
     transition: background-color 0.3s ease;
 }
 
+/* Outer wrapper for the entire form */
+.preferences-wrapper {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+/* Title text */
+.preferences-wrapper h2,
+.preferences-wrapper p {
+    text-align: center;
+}
+
+/* Form layout */
+.preference-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+/* Yellow preference blocks */
+.preference-box {
+    background-color: #f6cb42; /* wireframe yellow */
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.preference-box h4 {
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* Checkboxes and radios inside blocks */
+.preference-box label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+/* Button styling */
+button.btn-primary {
+    background-color: #f6cb42;
+    color: #333;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: bold;
+    margin-top: 30px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    transition: background-color 0.3s ease;
+}
+
+
+
 button.btn-primary:hover {
     background-color: #e9c55a;
 }
