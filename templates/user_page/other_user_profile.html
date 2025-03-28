@@ -11,15 +11,15 @@
             <div class="col-md-4">
                 <div class="profile-sidebar">
                     <div class="profile-image text-center">
-                        <img src="{% if other_user.userprofile.picture %}{{ other_user.userprofile.picture.url }}{% else %}{% static 'images/default.jpg' %}{% endif %}" alt="{{ other_user.username }}" class="img-fluid rounded-circle" style="max-width: 150px;">
+                        <img src="{% if other_user.profile.picture %}{{ other_user.profile.picture.url }}{% else %}{% static 'images/default.jpg' %}{% endif %}" alt="{{ other_user.username }}" class="img-fluid rounded-circle" style="max-width: 150px;">
                     </div>
                     <div class="profile-info mt-3 text-center">
                         <h5 class="mt-2">{{ other_user.username }}</h5>
-                        <p><strong>Phone Number:</strong> {{ other_user.userprofile.phone_number }}</p>
-                        <p><strong>Age:</strong> {{ other_user.userprofile.age }}</p>
+                        <p><strong>Phone Number:</strong> {{ other_user.profile.phone_number }}</p>
+                        <p><strong>Age:</strong> {{ other_user.profile.age }}</p>
 
                         <h5>Short Bio</h5>
-                        <p>{{ other_user.userprofile.description|default:"No bio yet! :(" }}</p>
+                        <p>{{ other_user.profile.description|default:"No bio yet! :(" }}</p>
                     </div>
                 </div>
             </div>
@@ -34,35 +34,35 @@
                     <div class="meal-preferences">
                         <p><strong>Regional Cuisines</strong></p>
                         <div class="tags mb-2">
-                            {% for cuisine in other_user.userprofile.regional_cuisines.all %}
+                            {% for cuisine in other_user.profile.regional_cuisines.all %}
                                 <span class="badge bg-warning">{{ cuisine }}</span>
                             {% endfor %}
                         </div>
 
                         <p><strong>Dining Vibes</strong></p>
                         <div class="tags mb-2">
-                            {% for vibe in other_user.userprofile.dining_vibes.all %}
+                            {% for vibe in other_user.profile.dining_vibes.all %}
                                 <span class="badge bg-warning">{{ vibe }}</span>
                             {% endfor %}
                         </div>
 
                         <p><strong>Budget</strong></p>
                         <div class="tags mb-2">
-                            {% for budget in other_user.userprofile.budgets.all %}
+                            {% for budget in other_user.profile.budgets.all %}
                                 <span class="badge bg-warning">{{ budget }}</span>
                             {% endfor %}
                         </div>
 
                         <p><strong>Age Range</strong></p>
                         <div class="tags mb-2">
-                            {% for age_range in other_user.userprofile.age_ranges.all %}
+                            {% for age_range in other_user.profile.age_ranges.all %}
                                 <span class="badge bg-warning">{{ age_range }}</span>
                             {% endfor %}
                         </div>
 
                         <p><strong>Dietary Needs</strong></p>
                         <div class="tags mb-2">
-                            {% for need in other_user.userprofile.dietary_needs.all %}
+                            {% for need in other_user.profile.dietary_needs.all %}
                                 <span class="badge bg-warning">{{ need }}</span>
                             {% endfor %}
                         </div>
