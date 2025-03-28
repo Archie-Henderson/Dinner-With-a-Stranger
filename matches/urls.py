@@ -18,7 +18,7 @@ urlpatterns = [
     path('api/total-matches/', total_matches, name='total-matches'),
     path('possible/accept/<int:user_id>/', views.possible_match_accept, name='possible_match_accept'),
     path('possible/deny/<int:user_id>/', views.possible_match_deny, name='possible_match_deny'),
-
+    path('user-match-counts/', views.user_match_counts, name='user_match_counts'),
     #path('registration/preferences/', views.registration_preferences, name='registration_preferences'),
 
 
