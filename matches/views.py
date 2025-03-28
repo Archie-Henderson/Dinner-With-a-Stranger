@@ -113,27 +113,53 @@ def update_match_status(request, match_id, status):
 
     match = get_object_or_404(Match, match_id=match_id)
 
+    acting_user = request.user
+    other_user = match.user1 if match.user2 == acting_user else match.user2
+
     if status == 'accepted':
-        if request.user == match.user1:
-            match.user1_status = 'accepted'
-            match.user2_status = 'pending'
-        elif request.user == match.user2:
-            match.user2_status = 'accepted'
-            match.user1_status = 'pending'
-        else:
-            return JsonResponse({'error': 'Unauthorized'}, status=403)
+        if acting_user == match.user1:
+            if match.user2_status == 'declined':
+                match.user1_status = 'accepted'
+                match.user2_status = 'pending'
+            elif match.user2_status == 'accepted':
+                match.user1_status = 'accepted'
+                match.user2_status = 'accepted'
+            elif match.user2_status == 'pending':
+                match.user1_status = 'accepted'
+                match.user2_status = 'accepted'
+            else:
+                match.user1_status = 'accepted'
+                match.user2_status = 'pending'
+        else:  # acting_user == match.user2
+            if match.user1_status == 'declined':
+                match.user2_status = 'accepted'
+                match.user1_status = 'pending'
+            elif match.user1_status == 'accepted':
+                match.user1_status = 'accepted'
+                match.user2_status = 'accepted'
+            elif match.user1_status == 'pending':
+                match.user1_status = 'accepted'
+                match.user2_status = 'accepted'
+            else:
+                match.user2_status = 'accepted'
+                match.user1_status = 'pending'
 
     elif status == 'declined':
-        if request.user == match.user1:
-            match.user1_status = 'declined'
-        elif request.user == match.user2:
-            match.user2_status = 'declined'
-        else:
-            return JsonResponse({'error': 'Unauthorized'}, status=403)
+        if acting_user == match.user1:
+            if match.user2_status == 'pending':
+                match.user1_status = 'declined'
+                match.user2_status = 'denied'
+            else:
+                match.user1_status = 'declined'
+        else:  # acting_user == match.user2
+            if match.user1_status == 'pending':
+                match.user2_status = 'declined'
+                match.user1_status = 'denied'
+            else:
+                match.user2_status = 'declined'
 
     match.save()
     return redirect(request.META.get('HTTP_REFERER'))
-
 
 @login_required
 @require_POST
