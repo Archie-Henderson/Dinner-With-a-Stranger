@@ -14,10 +14,10 @@ from user_page.models import (
 from django.utils.crypto import get_random_string
 from django.contrib.auth.hashers import make_password
 
-from django.core.files import File
 
 def generate_random_match_id():
     return get_random_string(length=30).upper()
+
 
 def assign_random_preferences(profile):
     profile.regional_cuisines.set(random.sample(list(Cuisine.objects.all()), k=min(3, Cuisine.objects.count())))
@@ -26,6 +26,7 @@ def assign_random_preferences(profile):
     profile.budgets.set(random.sample(list(Budget.objects.all()), k=1))
     profile.age_ranges.set(random.sample(list(AgeRange.objects.all()), k=1))
     profile.save()
+
 
 def check_age_range(profile1, profile2):
     user_ranges = set(profile1.age_ranges.values_list('label', flat=True))
@@ -43,16 +44,34 @@ def check_age_range(profile1, profile2):
 
     return in_range(profile1.age, other_ranges) and in_range(profile2.age, user_ranges)
 
+
 def check_cuisines(user, other_user):
     user_cuisines = set(user.regional_cuisines.values_list('name', flat=True))
     other_cuisines = set(other_user.regional_cuisines.values_list('name', flat=True))
     return bool(user_cuisines & other_cuisines)
 
-def populate_users():
-    users_data = [{'username': f'user{i}', 'email': f'user{i}@example.com', 'age': random.randint(18, 35), 'description': f"User {i}'s bio", 'phone_number': f'0123456789{i}'} for i in range(50)]
 
-    picture_folder = 'profile_images/' 
-    picture_files = [f"user-pic-{i+1}.jpg" for i in range(50)]
+def populate_users():
+    users_data = []
+    total_users = 50
+    mid_age_users = int(total_users * 0.7)
+
+    for i in range(total_users):
+        if i < mid_age_users:
+            age = random.randint(16, 25)
+        else:
+            age = random.randint(16, 35)
+
+        users_data.append({
+            'username': f'user{i}',
+            'email': f'user{i}@example.com',
+            'age': age,
+            'description': f"User {i}'s bio",
+            'phone_number': f'0123456789{i}'
+        })
+
+    picture_folder = 'profile_images/'
+    picture_files = [f"user-pic-{i+1}.jpg" for i in range(total_users)]
 
     created_users = []
 
@@ -69,19 +88,16 @@ def populate_users():
                 description=user_data['description'],
                 phone_number=user_data['phone_number'],
             )
-            # Just point to existing file
             profile.picture.name = picture_folder + picture_filename
             profile.save()
             assign_random_preferences(profile)
-            print(f"Created user: {user.username} with picture {picture_filename}")
+            print(f"Created user: {user.username} ({user_data['age']} years old) with picture {picture_filename}")
         else:
             print(f"User already exists: {user.username}")
 
         created_users.append(user)
 
     return created_users
-
-
 
 
 def populate_matches(users):
@@ -102,9 +118,7 @@ def populate_matches(users):
             user_profile = profiles[user.id]
             other_profile = profiles[other_user.id]
 
-            # Check if they match preferences
             if check_age_range(user_profile, other_profile) and check_cuisines(user_profile, other_profile):
-                # 50% chance → create match
                 if random.random() < 0.3:
                     roll = random.random()
                     if roll < 0.15:
@@ -121,7 +135,7 @@ def populate_matches(users):
                         user1_status = 'declined'
                         user2_status = 'declined'
 
-                    match_id = get_random_string(30).upper()
+                    match_id = generate_random_match_id()
                     Match.objects.create(
                         match_id=match_id,
                         user1=user,
@@ -132,11 +146,10 @@ def populate_matches(users):
                     print(f"Created match: {user.username} ({user1_status}) & {other_user.username} ({user2_status})")
                     count_created += 1
 
-                # Else: no match → will appear in possible suggestions
-
             created_pairs.add(pair)
 
     print(f"\n Total matches created: {count_created}")
+
 
 def populate_preference_options():
     Cuisine.objects.bulk_create([
@@ -180,6 +193,7 @@ def populate_preference_options():
         AgeRange(label="24-26"),
         AgeRange(label="27+"),
     ], ignore_conflicts=True)
+
 
 if __name__ == '__main__':
     populate_preference_options()

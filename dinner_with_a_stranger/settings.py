@@ -97,7 +97,7 @@ REGISTRATION_OPEN = True
 REGISTRATION_AUTO_LOGIN = True
 
 # The URL that Django redirects users to after logging in.
-#LOGIN_REDIRECT_URL = 'matches:matches_possible'
+LOGIN_REDIRECT_URL = 'matches:matches_possible'
 SIMPLE_BACKEND_REDIRECT_URL = 'registration_preferences'
 LOGOUT_REDIRECT_URL = 'index'
 
@@ -161,5 +161,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 #Cookie settings
 SESSION_EXPIRE_AT_BROWSER_CLOSE=True
 SESSION_COOKIE_AGE=1209600/2 #Arbitrary value, IIRC this is one or two weeks
-
-#LOGIN_REDIRECT_URL = 'registration_preferences'
