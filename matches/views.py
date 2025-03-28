@@ -266,8 +266,8 @@ def user_match_counts(request):
     ).count()
 
     pending_count = Match.objects.filter(
-        (Q(user1=user) & Q(user1_status='accepted') & Q(user2_status='pending')) |
-        (Q(user2=user) & Q(user2_status='accepted') & Q(user1_status='pending'))
+        (Q(user1=user) & Q(user1_status='pending') & Q(user2_status='accepted')) |
+        (Q(user2=user) & Q(user2_status='pending') & Q(user1_status='accepted'))
     ).count()
 
     return JsonResponse({
@@ -276,6 +276,7 @@ def user_match_counts(request):
         'pending': pending_count,
         'denied': denied_count
     })
+
 
 
 
