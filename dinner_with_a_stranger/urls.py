@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import include
 from matches import views as match_views
+from user_page import views as user_page_views
 
 
 urlpatterns = [
@@ -25,8 +26,8 @@ urlpatterns = [
     path('profile/', include('user_page.urls')), 
     path('admin/', admin.site.urls),
     path('accounts/', include('registration.backends.simple.urls')),
-    path('toggle_theme/', views.toggle_theme, name='toggle_theme'),
-    path('preferences/', views.registration_preferences, name='registration_preferences'),
+    path('toggle_theme/', match_views.toggle_theme, name='toggle_theme'),
+    path('preferences/', user_page_views.registration_preferences, name='registration_preferences'),
 
 ]
 
