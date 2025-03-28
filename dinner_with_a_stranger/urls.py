@@ -26,6 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('registration.backends.simple.urls')),
     path('toggle_theme/', match_views.toggle_theme, name='toggle_theme'),
-    path('preferences/', views.registration_preferences, name='registration_preferences'),
+    path('preferences/', match_views.registration_preferences, name='registration_preferences'),
+    
 ]
 

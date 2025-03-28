@@ -253,7 +253,7 @@ def toggle_theme(request):
 
 
 def registration_preferences(request):
-     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
 
     if request.method == "POST":
          form = UserPreferencesForm(request.POST, instance=user_profile)
@@ -261,7 +261,8 @@ def registration_preferences(request):
              form.save()
              return redirect('matches_possible')  
          form = UserPreferencesForm(instance=user_profile)
+         
     
     else:
-        form = UserPreferencesForm(instance=user_profile) 
-     return render(request, 'registration_preferences.html', {'form': form})
+         form = UserPreferencesForm(instance=user_profile) 
+    return render(request, 'registration_preferences.html', {'form': form})
