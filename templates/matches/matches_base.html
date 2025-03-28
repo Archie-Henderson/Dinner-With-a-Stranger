@@ -5,29 +5,28 @@
 
 {% block content %}
 <div class="matches-container">
-    <!-- Header -->
     <div class="matches-header">
-        <h1>{% block matches_title %}Matches{% endblock %}</h1>
+        <h5>{% block matches_title %}Matches{% endblock %}</h5> 
 
-        <!-- Status Text Labels -->
+        <!-- Status Text Labels
         <div class="matches-status">
             <span class="status-text {% block new_active %}{% endblock %}">New</span>
             <span class="status-text {% block wait_active %}{% endblock %}">Wait</span>
             <span class="status-text {% block match_active %}{% endblock %}">Match</span>
-        </div>
+        </div> -->
 
         <div class="matches-nav">
             <a href="{% url 'matches:matches_possible' %}" class="nav-btn {% block possible_active %}{% endblock %}">
-                Possible (<span id="possible-count">0</span>)
+                Possible :<span id="possible-count">0</span>
             </a>
             <a href="{% url 'matches:matches_pending' %}" class="nav-btn {% block pending_active %}{% endblock %}">
-                Pending (<span id="pending-count">0</span>)
+                Pending :<span id="pending-count">0</span>
             </a>
             <a href="{% url 'matches:matches_accepted' %}" class="nav-btn {% block accepted_active %}{% endblock %}">
-                Accepted (<span id="accepted-count">0</span>)
+                Accepted :<span id="accepted-count">0</span>
             </a>
             <a href="{% url 'matches:matches_denied' %}" class="nav-btn {% block denied_active %}{% endblock %}">
-                Denied (<span id="denied-count">0</span>)
+                Denied :<span id="denied-count">0</span>
             </a>
         </div>
         

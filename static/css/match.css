@@ -1,0 +1,143 @@
+
+
+/* Matches Page Container */
+.matches-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    min-height: calc(2 * 250px + 40px); 
+  }
+  
+  /* Sidebar Styling */
+  .matches-header {
+    flex: 1;
+    max-width: 200px;
+  }
+  
+  .matches-status {
+    margin-bottom: 20px;
+  }
+  
+  .status-text {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #6c757d;
+    margin-bottom: 10px;
+  }
+  
+  .status-text.new {
+    color: #ffc107;
+  }
+  
+  .status-text.wait {
+    color: #17a2b8;
+  }
+  
+  .status-text.match {
+    color: #28a745;
+  }
+  
+  /* Navigation Buttons */
+  .matches-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .nav-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    color: #333;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .nav-btn:hover {
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .nav-btn.active {
+    background-color: #ffc107;
+    color: #fff;
+  }
+  
+  /* Matches Grid */
+  .matches-grid {
+    flex: 3;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  
+  /* Match Card Styling */
+  .match-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .match-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  }
+  
+  /* Match Image */
+  .match-img {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #ffc107;
+  }
+  
+  .match-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* Match Info */
+  .match-info h2 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .match-info p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 15px;
+  }
+  
+  /* Match Button */
+  .match-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ffc107;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+  }
+  
+  .match-btn:hover {
+    background-color: #e0a800;
+  }
