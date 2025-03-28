@@ -1,6 +1,5 @@
 
 
-/* Matches Page Container */
 .matches-container {
     display: flex;
     flex-direction: row;
@@ -10,7 +9,6 @@
     min-height: calc(2 * 250px + 40px); 
   }
   
-  /* Sidebar Styling */
   .matches-header {
     flex: 1;
     max-width: 200px;
@@ -40,7 +38,6 @@
     color: #28a745;
   }
   
-  /* Navigation Buttons */
   .matches-nav {
     display: flex;
     flex-direction: column;
@@ -71,7 +68,6 @@
     color: #fff;
   }
   
-  /* Matches Grid */
   .matches-grid {
     flex: 3;
     display: grid;
@@ -79,7 +75,6 @@
     gap: 20px;
   }
   
-  /* Match Card Styling */
   .match-card {
     background-color: #ffffff;
     border-radius: 16px;
@@ -95,7 +90,6 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
   }
   
-  /* Match Image */
   .match-img {
     width: 100px;
     height: 100px;
@@ -111,7 +105,6 @@
     object-fit: cover;
   }
   
-  /* Match Info */
   .match-info h2 {
     font-size: 1.2rem;
     font-weight: bold;
@@ -125,7 +118,6 @@
     margin-bottom: 15px;
   }
   
-  /* Match Button */
   .match-btn {
     display: inline-block;
     padding: 10px 20px;
