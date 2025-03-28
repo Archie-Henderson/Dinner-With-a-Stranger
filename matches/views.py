@@ -11,6 +11,10 @@ from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth import logout
 
+from django.views.decorators.http import require_POST
+
+from django.utils.crypto import get_random_string
+
 
 def staff_required(login_url=None):
     return user_passes_test(lambda u: u.is_staff, login_url=login_url)
@@ -66,16 +70,28 @@ def index(request):
 
 @login_required
 def matches_possible(request):
-    # find new potential matches
-    find_new_matches(request)
+    user = request.user
 
-    # Fetch only those matches where the current user initiated the match
-    # and is still waiting for the other person to respond
-    matches = Match.objects.filter(
-        (Q(user1=request.user) & Q(user1_status='pending') & Q(user2_status='pending'))
+    # Exclude users already matched or declined
+    declined_matches = Match.objects.filter(
+        (Q(user1=user) & Q(user1_status='declined')) | 
+        (Q(user2=user) & Q(user2_status='declined'))
     )
+    declined_users = [m.get_other_user(user) for m in declined_matches]
 
-    return render(request, 'matches/matches_possible.html', {'matches': matches})
+    matched_users = Match.objects.filter(
+        Q(user1=user) | Q(user2=user)
+    ).values_list('user1', 'user2')
+
+    matched_user_ids = set()
+    for u1, u2 in matched_users:
+        matched_user_ids.add(u1)
+        matched_user_ids.add(u2)
+    matched_user_ids.discard(user.id)  # remove yourself
+
+    possible_users = UserProfile.objects.exclude(id__in=matched_user_ids).exclude(id=user.id).exclude(id__in=[u.id for u in declined_users])
+
+    return render(request, 'matches/matches_possible.html', {'possible_users': possible_users})
 
 @login_required
 def matches_pending(request):
@@ -130,34 +146,87 @@ def matches_base(request):
     return render(request, 'matches/matches_base.html')
 
 @login_required
+@require_POST
 def update_match_status(request, match_id, status):
-    # Ensure the status is valid
-    if status not in ['accepted', 'declined', 'pending']:
+    if status not in ['accepted', 'declined']:
         return JsonResponse({'error': 'Invalid status'}, status=400)
 
     match = get_object_or_404(Match, match_id=match_id)
 
-    # Check if the current user is one of the match participants
     if request.user == match.user1:
         match.user1_status = status
-        if status == 'declined':
+        if status == 'accepted':
+            match.user2_status = 'accepted'
+        elif status == 'declined':
             match.user2_status = 'declined'
     elif request.user == match.user2:
         match.user2_status = status
-        if status == 'declined':
+        if status == 'accepted':
+            match.user1_status = 'accepted'
+        elif status == 'declined':
             match.user1_status = 'declined'
     else:
         return JsonResponse({'error': 'Unauthorized'}, status=403)
 
-    # Save the updated match status
     match.save()
 
-    # Debugging - Ensure that the status is updated
-    print(f"Updated match {match.match_id}: {match.user1_status}, {match.user2_status}")
+    # Stay on same page — redirect back
+    #return redirect(request.META.get('HTTP_REFERER', 'matches:matches_base'))
+
 
     # Reload the page (Do not redirect to another page)
     return redirect(request.META.get('HTTP_REFERER'))
 
+@login_required
+@require_POST
+def possible_match_accept(request, user_id):
+    other_user = get_object_or_404(User, id=user_id)
+
+    # Prevent matching yourself
+    if other_user == request.user:
+        return HttpResponse("Cannot match yourself", status=400)
+
+    # Check if match already exists
+    if Match.objects.filter(
+        (Q(user1=request.user, user2=other_user) | Q(user1=other_user, user2=request.user))
+    ).exists():
+        return HttpResponse("Match already exists", status=400)
+
+    match_id = get_random_string(30).upper()
+    Match.objects.create(
+        match_id=match_id,
+        user1=request.user,
+        user2=other_user,
+        user1_status='accepted',
+        user2_status='accepted'
+    )
+
+    return redirect(request.META.get('HTTP_REFERER'))
+
+@login_required
+@require_POST
+def possible_match_deny(request, user_id):
+    other_user = get_object_or_404(User, id=user_id)
+
+    if other_user == request.user:
+        return HttpResponse("Cannot decline yourself", status=400)
+
+    # Check if match already exists
+    if Match.objects.filter(
+        (Q(user1=request.user, user2=other_user) | Q(user1=other_user, user2=request.user))
+    ).exists():
+        return HttpResponse("Match already exists", status=400)
+
+    match_id = get_random_string(30).upper()
+    Match.objects.create(
+        match_id=match_id,
+        user1=request.user,
+        user2=other_user,
+        user1_status='declined',
+        user2_status='declined'
+    )
+
+    return redirect(request.META.get('HTTP_REFERER'))
 
 @login_required
 def match_action_confirm(request, match_id, action_type):

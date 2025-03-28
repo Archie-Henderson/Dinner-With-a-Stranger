@@ -7,22 +7,29 @@
 {% block possible_active %}active{% endblock %}
 
 {% block matches_grid %}
-    {% if matches_with_others %}
-        {% for match, other_user in matches_with_others %}
+    {% if possible_users %}
+        {% for other_user in possible_users %}
             <div class="possible-wrapper">
                 <div class="user-profile-container">
                     <div class="match-card">
                         {% include 'matches/match_card.html' with other_user=other_user %}
                     </div>
-                    <form action="{% url 'matches:update_match_status' match.match_id 'accepted' %}" method="POST">
+                    <form action="{% url 'matches:possible_match_accept' other_user.id %}" method="POST">
                         {% csrf_token %}
                         <button class="match-btn" type="submit">
                             Send Request
                         </button>
                     </form>
+                    <form action="{% url 'matches:possible_match_deny' other_user.id %}" method="POST">
+                        {% csrf_token %}
+                        <button class="deny-btn" type="submit">
+                            Deny
+                        </button>
+                    </form>
                 </div>
             </div>
         {% endfor %}
+
     {% else %}
         <p>No possible matches found.</p>
     {% endif %}

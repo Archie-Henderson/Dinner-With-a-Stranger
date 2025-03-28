@@ -14,7 +14,9 @@ urlpatterns = [
     path('ajax/pending/', views.ajax_matches_pending, name='ajax_matches_pending'),
     path('<str:match_id>/confirm/<str:action_type>/', views.match_action_confirm, name='match_action_confirm'),
     path('api/total-matches/', total_matches, name='total-matches'),
-    path('api/user-match-counts/', user_match_counts, name='user-match-counts'),
+    path('possible/accept/<int:user_id>/', views.possible_match_accept, name='possible_match_accept'),
+    path('possible/deny/<int:user_id>/', views.possible_match_deny, name='possible_match_deny'),
+
     # path('registration/preferences/', views.registration_preferences, name='registration_preferences'),
 
 
