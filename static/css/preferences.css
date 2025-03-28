@@ -1,0 +1,82 @@
+/* Container styling */
+.container {
+    max-width: 700px;
+    background-color: #fdfdfd;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 60px;
+}
+
+/* Headings */
+.container h2 {
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 25px;
+    color: #343a40;
+}
+
+/* Form groups */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Labels */
+.form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #495057;
+}
+
+/* Input fields, dropdowns, textareas */
+.form-control,
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+/* Focus effect */
+.form-control:focus,
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #ffc107;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+}
+
+/* Submit button */
+button.btn-primary {
+    display: block;
+    width: 100%;
+    font-size: 1.1rem;
+    padding: 12px;
+    border-radius: 10px;
+    background-color: #ffc107;
+    border: none;
+    color: #fff;
+    transition: background-color 0.3s ease;
+}
+
+button.btn-primary:hover {
+    background-color: #e9c55a;
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding: 20px;
+    }
+
+    button.btn-primary {
+        font-size: 1rem;
+        padding: 10px;
+    }
+}
