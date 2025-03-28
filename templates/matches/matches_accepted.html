@@ -9,14 +9,16 @@
     {% if matches_with_others %}
         {% for match, other_user in matches_with_others %}
             <div class="accepted-wrapper">
-                <form action="{% url 'matches:update_match_status' match.match_id 'declined' %}" method="POST">
-                    {% csrf_token %}
-                    <button class="unmatch-btn" type="submit">
-                        Unmatch
-                    </button>
-                </form>
-                <div class="match-card">
-                    {% include 'matches/match_card.html' with other_user=other_user %}
+                <div class="user-profile-container">
+                    <div class="match-card">
+                        {% include 'matches/match_card.html' with other_user=other_user %}
+                    </div>
+                    <form action="{% url 'matches:update_match_status' match.match_id 'declined' %}" method="POST">
+                        {% csrf_token %}
+                        <button class="unmatch-btn" type="submit">
+                            Unmatch
+                        </button>
+                    </form>
                 </div>
             </div>
         {% endfor %}
