@@ -113,28 +113,23 @@ def update_match_status(request, match_id, status):
 
     match = get_object_or_404(Match, match_id=match_id)
 
-    if request.user == match.user1:
-        if status == 'accepted':
+    if status == 'accepted':
+        if request.user == match.user1:
             match.user1_status = 'accepted'
-            if match.user2_status == 'declined':
-                match.user2_status = 'pending'
-        elif status == 'declined':
-            if request.user == match.user1:
-                match.user1_status = 'declined'
-            else:
-                match.user2_status = 'declined'
-    elif request.user == match.user2:
-        if status == 'accepted':
+            match.user2_status = 'pending'
+        elif request.user == match.user2:
             match.user2_status = 'accepted'
-            if match.user1_status == 'declined':
-                match.user1_status = 'pending'
-        elif status == 'declined':
-            if request.user == match.user1:
-                match.user1_status = 'declined'
-            else:
-                match.user2_status = 'declined'
-    else:
-        return JsonResponse({'error': 'Unauthorized'}, status=403)
+            match.user1_status = 'pending'
+        else:
+            return JsonResponse({'error': 'Unauthorized'}, status=403)
+
+    elif status == 'declined':
+        if request.user == match.user1:
+            match.user1_status = 'declined'
+        elif request.user == match.user2:
+            match.user2_status = 'declined'
+        else:
+            return JsonResponse({'error': 'Unauthorized'}, status=403)
 
     match.save()
     return redirect(request.META.get('HTTP_REFERER'))
