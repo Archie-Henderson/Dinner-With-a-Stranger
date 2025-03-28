@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
     Profile - {{ user.username }}
@@ -9,15 +10,15 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="profile-sidebar">
-                    <div class="profile-image">
-                        <img src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}https://via.placeholder.com/150{% endif %}" alt="User Profile Picture" class="img-fluid rounded-circle">
+                    <div class="profile-image text-center">
+                        <img src="{% if user.profile.picture %}{{ user.profile.picture.url }}{% else %}{% static 'images/default.jpg' %}{% endif %}" alt="{{ user.username }}" class="img-fluid rounded-circle" style="max-width: 150px;">
                     </div>
-                    <div class="profile-info mt-3">
+                    <div class="profile-info mt-3 text-center">
                         <a href="{% url 'user_page:edit_profile' %}" class="btn btn-link">Edit profile</a>
                         <h5 class="mt-2">{{ user.username }}</h5>
                         <p><strong>Phone Number:</strong> {{ user.profile.phone_number }}</p>
                         <p><strong>Age:</strong> {{ user.profile.age }}</p>
-                        
+
                         <h5>Short Bio</h5>
                         <p>{{ user.profile.bio|default:"No bio yet! :(" }}</p>
                     </div>
@@ -33,34 +34,35 @@
                     <h5>Meal Preferences</h5>
                     <div class="meal-preferences">
                         <p><strong>Regional Cuisines</strong></p>
-                        <div class="tags">
+                        <div class="tags mb-2">
                             {% for cuisine in user.profile.regional_cuisines.all %}
                                 <span class="badge bg-warning">{{ cuisine }}</span>
                             {% endfor %}
                         </div>
+
                         <p><strong>Dining Vibes</strong></p>
-                        <div class="tags">
+                        <div class="tags mb-2">
                             {% for vibe in user.profile.dining_vibes.all %}
                                 <span class="badge bg-warning">{{ vibe }}</span>
                             {% endfor %}
                         </div>
 
                         <p><strong>Budget</strong></p>
-                        <div class="tags">
+                        <div class="tags mb-2">
                             {% for budget in user.profile.budgets.all %}
                                 <span class="badge bg-warning">{{ budget }}</span>
                             {% endfor %}
                         </div>
 
                         <p><strong>Age Range</strong></p>
-                        <div class="tags">
+                        <div class="tags mb-2">
                             {% for age_range in user.profile.age_ranges.all %}
                                 <span class="badge bg-warning">{{ age_range }}</span>
                             {% endfor %}
                         </div>
-                        
+
                         <p><strong>Dietary Needs</strong></p>
-                        <div class="tags">
+                        <div class="tags mb-2">
                             {% for need in user.profile.dietary_needs.all %}
                                 <span class="badge bg-warning">{{ need }}</span>
                             {% endfor %}

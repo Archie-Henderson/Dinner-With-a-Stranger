@@ -1,5 +1,3 @@
-
-
 <div class="match-card {% if extra_class %}{{ extra_class }}{% endif %}">
     <div class="match-img">
         <img src="{% if other_user.profile.picture %}{{ other_user.profile.picture.url }}{% else %}/static/images/default.jpg{% endif %}" alt="{{ other_user.username }}">
@@ -12,5 +10,3 @@
         {% endif %}
     </div>
 </div>
-
-
